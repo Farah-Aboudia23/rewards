@@ -351,9 +351,9 @@ const ICON_CHOICES = ['🤖','💡','🚀','🧠','🔎','🏆','🌟','⭐','�
 const COLOR_CHOICES = ['#8C7AE6','#F080A0','#3FBFBF','#A78BFA','#F5934D','#6FBF73','#F0C136','#5B9EE1','#E4674F','#5CC29E'];
 
 const MILESTONES = [
-  {stars:10, icon:'🎫', label:'بطاقة تشجيعية'},
-  {stars:20, icon:'🎁', label:'سحب مفاجأة'},
-  {stars:30, icon:'✨', label:'امتياز جماعي'},
+  {stars:20, icon:'🎫', label:'بطاقة تشجيعية'},
+  {stars:30, icon:'🎁', label:'سحب مفاجأة'},
+  {stars:40, icon:'✨', label:'امتياز جماعي'},
   {stars:50, icon:'🏆', label:'قاعة النجوم'},
 ];
 
@@ -395,10 +395,9 @@ function render(){
       <div class="topbar-title">
         <h1>💻⭐ مسار نجوم الحاسوب</h1>
         <p>كل نجمة تقربنا من قمة الإنجاز</p>
-      <!-- <p id="syncBadge" style="opacity:.9;font-size:11px;margin-top:6px;font-weight:700;"></p> --!>
+        <p id="syncBadge" style="opacity:.9;font-size:11px;margin-top:6px;font-weight:700;"></p>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
-        <button class="icon-btn" id="refreshSyncBtn" title="إعادة محاولة الاتصال بقاعدة البيانات" style="position:relative;z-index:1;">🔄</button>
         <div class="topbar-emoji">${view==='class' ? '🚩' : '🧑‍🚀'}</div>
       </div>
     </div>
@@ -491,7 +490,7 @@ function renderClassDetail(cls){
 
   html += `<div class="groups-grid">`;
   cls.groups.forEach(g=>{
-    const scale = Math.max(50, Math.ceil((g.stars+10)/10)*10);
+    const scale = 50;
     const pct = Math.min(100, (g.stars/scale)*100);
     html += `
       <div class="group-card" style="--gc:${g.color}">
