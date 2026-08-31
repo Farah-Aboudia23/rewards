@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مسار نجوم الحاسوب</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800&family=Tajawal:wght@400;500;700&display=swap');
+
+:root{
+  --canvas:#F6F4FF;
+  --panel:#FFFFFF;
+  --ink:#241F47;
+  --ink-soft:#5C577E;
+  --line:#E6E1FA;
+  --gold:#F5B841;
+  --gold-deep:#D98F1E;
+  --danger:#E4674F;
+  --shadow: 0 10px 28px -14px rgba(36,31,71,.28);
+  --radius: 20px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1100px 500px at 12% -8%, #EAE4FF 0%, transparent 60%),
+    radial-gradient(900px 480px at 100% 0%, #FDEFE0 0%, transparent 55%),
+    var(--canvas);
+  color:var(--ink);
+  font-family:'Tajawal',sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{font-family:'Cairo',sans-serif;}
+button{font-family:inherit;cursor:pointer;}
+input{font-family:inherit;}
+
+/* ===== Shell ===== */
+#app{max-width:1180px;margin:0 auto;padding:20px 20px 60px;}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:linear-gradient(120deg,#3B2E7A,#5A4AA8 55%,#7C63C9);
+  color:#fff;border-radius:24px;padding:20px 26px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;
+}
+.topbar::before{
+  content:"";position:absolute;inset:0;
+  background-image: radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.5) 40%, transparent 41%),
+                     radial-gradient(2px 2px at 90px 12px, rgba(255,255,255,.35) 40%, transparent 41%),
+                     radial-gradient(2px 2px at 160px 45px, rgba(255,255,255,.4) 40%, transparent 41%),
+                     radial-gradient(2px 2px at 240px 20px, rgba(255,255,255,.3) 40%, transparent 41%),
+                     radial-gradient(2px 2px at 320px 50px, rgba(255,255,255,.4) 40%, transparent 41%);
+  opacity:.8;pointer-events:none;
+}
+.topbar-title{position:relative;z-index:1;}
+.topbar-title h1{margin:0;font-size:26px;font-weight:800;}
+.topbar-title p{margin:4px 0 0;font-size:13.5px;color:#DCD5FF;font-weight:500;}
+.topbar-emoji{font-size:34px;position:relative;z-index:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.2));}
+
+/* ===== Buttons ===== */
+.btn{
+  border:none;border-radius:14px;padding:10px 16px;font-weight:700;font-size:14px;
+  display:inline-flex;align-items:center;gap:6px;transition:.15s transform ease, .15s box-shadow ease;
+}
+.btn:active{transform:scale(.96);}
+.btn-primary{background:var(--gold);color:#3B2A0A;box-shadow:0 6px 16px -6px rgba(217,143,30,.6);}
+.btn-primary:hover{box-shadow:0 8px 18px -6px rgba(217,143,30,.75);}
+.btn-ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);}
+.btn-ghost:hover{background:rgba(255,255,255,.22);}
+.btn-soft{background:var(--panel);color:var(--ink);border:1.5px solid var(--line);}
+.btn-soft:hover{border-color:#C9BFF5;}
+.btn-danger{background:#FCE7E2;color:#B23E28;}
+.btn-danger:hover{background:#FAD8CF;}
+.btn-sm{padding:6px 10px;font-size:12.5px;border-radius:10px;}
+.icon-btn{
+  width:32px;height:32px;border-radius:10px;border:none;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.85);color:var(--ink-soft);font-size:15px;
+}
+.icon-btn:hover{background:#fff;color:var(--danger);}
+
+/* ===== Loading ===== */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;color:var(--ink-soft);gap:14px;}
+.spinner{width:34px;height:34px;border-radius:50%;border:4px solid #E1DAFA;border-top-color:#7C63C9;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== Classes grid (home) ===== */
+.section-heading{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px;}
+.section-heading h2{margin:0;font-size:19px;font-weight:800;}
+.section-heading span{color:var(--ink-soft);font-size:13px;font-weight:500;}
+
+.classes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;}
+.class-card{
+  background:var(--panel);border:1.5px solid var(--line);border-radius:var(--radius);
+  padding:20px;position:relative;box-shadow:var(--shadow);cursor:pointer;transition:.15s transform ease,.15s border-color ease;
+}
+.class-card:hover{transform:translateY(-3px);border-color:#C9BFF5;}
+.class-card .cc-remove{position:absolute;top:12px;left:12px;}
+.class-card .cc-icon{font-size:30px;}
+.class-card h3{margin:10px 0 4px;font-size:18px;}
+.class-card .cc-meta{color:var(--ink-soft);font-size:12.5px;display:flex;gap:12px;margin-top:8px;}
+.class-card .cc-total{
+  margin-top:12px;display:inline-flex;align-items:center;gap:6px;background:#FFF6E4;color:var(--gold-deep);
+  padding:5px 12px;border-radius:100px;font-weight:700;font-size:13px;
+}
+
+.add-class-card{
+  border:2px dashed #C9BFF5;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;padding:26px;color:#7C63C9;font-weight:700;background:rgba(124,99,201,.04);
+  min-height:150px;transition:.15s;
+}
+.add-class-card:hover{background:rgba(124,99,201,.09);}
+
+.empty-state{
+  text-align:center;padding:60px 20px;color:var(--ink-soft);
+}
+.empty-state .ee-emoji{font-size:44px;display:block;margin-bottom:10px;}
+.empty-state h3{color:var(--ink);margin:0 0 6px;}
+
+/* ===== Class detail ===== */
+.detail-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:26px 0 6px;flex-wrap:wrap;}
+.detail-header .dh-left{display:flex;align-items:center;gap:10px;}
+.back-btn{background:var(--panel);border:1.5px solid var(--line);}
+.class-title{display:flex;align-items:center;gap:8px;}
+.class-title h2{margin:0;font-size:22px;}
+.class-title button{background:none;border:none;color:var(--ink-soft);font-size:15px;}
+.class-title button:hover{color:#7C63C9;}
+
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;margin-top:18px;}
+
+.group-card{
+  background:var(--panel);border-radius:var(--radius);padding:18px;position:relative;
+  box-shadow:var(--shadow);border-top:5px solid var(--gc,#7C63C9);
+}
+.group-card .gc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.gc-badge{
+  width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:24px;background:color-mix(in srgb, var(--gc,#7C63C9) 16%, white);
+}
+.gc-name-row{flex:1;margin-inline-start:12px;}
+.gc-name{
+  border:none;background:transparent;font-family:'Cairo',sans-serif;font-weight:800;font-size:16.5px;
+  color:var(--ink);width:100%;padding:2px 0;border-bottom:1.5px dashed transparent;
+}
+.gc-name:focus{outline:none;border-bottom-color:var(--gc,#7C63C9);}
+.gc-leader{
+  border:none;background:transparent;font-size:12.5px;color:var(--ink-soft);width:100%;margin-top:2px;
+  border-bottom:1.5px dashed transparent;padding:2px 0;
+}
+.gc-leader:focus{outline:none;border-bottom-color:#C9BFF5;}
+.gc-leader::placeholder{color:#B7B2D6;}
+
+.gc-stars{display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:8px;}
+.gc-star-btn{
+  width:34px;height:34px;border-radius:11px;border:none;font-size:18px;font-weight:800;
+  background:#F1EEFB;color:var(--ink);
+}
+.gc-star-btn:active{transform:scale(.9);}
+.gc-star-btn.minus{color:#B23E28;background:#FCE7E2;}
+.gc-star-count{display:flex;flex-direction:column;align-items:center;line-height:1;}
+.gc-star-count b{font-size:24px;font-family:'Cairo',sans-serif;}
+.gc-star-count span{font-size:11px;color:var(--ink-soft);margin-top:2px;}
+
+.gc-track{margin-top:16px;}
+.gc-track-bar{height:10px;border-radius:100px;background:#F0EEFA;position:relative;overflow:visible;}
+.gc-track-fill{
+  position:absolute;top:0;right:0;height:100%;border-radius:100px;
+  background:linear-gradient(90deg, var(--gc,#7C63C9), var(--gold));transition:width .4s ease;
+}
+.gc-track-icon{
+  position:absolute;top:50%;transform:translate(50%,-50%);font-size:16px;transition:right .4s ease;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.25));
+}
+.gc-track-flag{position:absolute;left:-2px;top:50%;transform:translate(-40%,-60%);font-size:15px;}
+.gc-milestones{display:flex;justify-content:space-between;margin-top:8px;}
+.gc-milestone{display:flex;flex-direction:column;align-items:center;gap:2px;opacity:.35;}
+.gc-milestone.done{opacity:1;}
+.gc-milestone .m-icon{font-size:14px;}
+.gc-milestone .m-label{font-size:9.5px;color:var(--ink-soft);white-space:nowrap;}
+
+.gc-remove{position:absolute;top:12px;left:12px;}
+
+.add-group-card{
+  border:2px dashed #C9BFF5;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;color:#7C63C9;font-weight:700;background:rgba(124,99,201,.04);min-height:190px;
+}
+.add-group-card:hover{background:rgba(124,99,201,.09);}
+.quick-add-note{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:6px;font-weight:500;}
+.quick-add-note button{background:none;border:none;color:#7C63C9;font-weight:700;text-decoration:underline;padding:0;}
+
+/* ===== Modal ===== */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(36,31,71,.45);backdrop-filter:blur(2px);
+  display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;
+}
+.modal{
+  background:#fff;border-radius:22px;padding:24px;width:100%;max-width:420px;box-shadow:0 24px 60px -18px rgba(36,31,71,.5);
+  max-height:90vh;overflow-y:auto;
+}
+.modal h3{margin:0 0 4px;font-size:18px;}
+.modal p.sub{margin:0 0 16px;color:var(--ink-soft);font-size:13px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+.field input[type=text]{
+  width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14.5px;color:var(--ink);
+}
+.field input[type=text]:focus{outline:none;border-color:#7C63C9;}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;}
+.swatch{
+  width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;
+  border:2px solid transparent;background:#F6F4FF;
+}
+.swatch.selected{border-color:var(--ink);}
+.modal-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
+
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
+  padding:10px 20px;border-radius:100px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow);z-index:60;
+  opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+footer.note{margin-top:34px;text-align:center;color:var(--ink-soft);font-size:12px;}
+
+@media (max-width:560px){
+  .topbar{padding:16px 18px;flex-wrap:wrap;}
+  .topbar-title h1{font-size:20px;}
+  #app{padding:14px 12px 40px;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="loading" id="loadingState">
+    <div class="spinner"></div>
+    <div>جارِ تحميل مسار النجوم...</div>
+  </div>
+</div>
+
+<script>
+/* ============ Storage helpers (Firebase Realtime Database, with local fallback) ============ */
+const FIREBASE_BASE = 'https://schoolproject-97946-default-rtdb.firebaseio.com';
+const FIREBASE_PATH = 'reward-tracker-state';
+const FIREBASE_URL = `${FIREBASE_BASE}/${FIREBASE_PATH}.json`;
+const LOCAL_KEY = 'reward-tracker-state';
+
+let lastSyncedAt = null;
+let syncStatus = 'unknown'; // 'online' | 'offline' | 'unknown'
+
+async function localGet(){
+  try{
+    const res = await window.storage.get(LOCAL_KEY, false);
+    return res && res.value ? JSON.parse(res.value) : null;
+  }catch(e){ return null; }
+}
+async function localSet(){
+  try{ await window.storage.set(LOCAL_KEY, JSON.stringify(state), false); }
+  catch(e){ console.error('Local backup save failed', e); }
+}
+
+async function loadState(){
+  try{
+    const res = await fetch(FIREBASE_URL, { cache:'no-store' });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    lastSyncedAt = new Date();
+    syncStatus = 'online';
+    if(data && typeof data === 'object'){
+      return { classes: Array.isArray(data.classes) ? data.classes : [], activeClassId: data.activeClassId || null };
+    }
+    return { classes: [], activeClassId: null };
+  }catch(e){
+    console.error('Firebase load error', e);
+    syncStatus = 'offline';
+    const local = await localGet();
+    if(local) return local;
+    return { classes: [], activeClassId: null };
+  }
+}
+
+let saving = false, pendingSave = false;
+async function saveState(){
+  if(saving){ pendingSave = true; return; }
+  saving = true;
+  // Always keep a local backup so nothing is ever lost.
+  await localSet();
+  try{
+    const res = await fetch(FIREBASE_URL, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(state)
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    lastSyncedAt = new Date();
+    syncStatus = 'online';
+  }catch(e){
+    console.error('Firebase save error', e);
+    syncStatus = 'offline';
+  }finally{
+    updateSyncBadge();
+    saving = false;
+    if(pendingSave){ pendingSave = false; saveState(); }
+  }
+}
+
+async function manualRefresh(){
+  showToast('جارِ إعادة المحاولة...');
+  const fresh = await loadState();
+  state = fresh;
+  if(state.activeClassId && !state.classes.find(c=>c.id===state.activeClassId)){
+    state.activeClassId = null; view = 'home';
+  }
+  render();
+  showToast(syncStatus === 'online' ? 'تم الاتصال بقاعدة البيانات ✅' : 'ما زال الاتصال بقاعدة البيانات غير متاح، يتم الحفظ محليًا');
+}
+
+function updateSyncBadge(){
+  const el = document.getElementById('syncBadge');
+  if(!el) return;
+  if(syncStatus === 'online'){
+    el.textContent = '✅ متصل — آخر مزامنة: ' + (lastSyncedAt ? lastSyncedAt.toLocaleTimeString('ar', {hour:'2-digit', minute:'2-digit'}) : '');
+    el.style.color = '#C9F5DA';
+  } else if(syncStatus === 'offline'){
+    el.textContent = '⚠️ غير متصل بقاعدة البيانات — يتم الحفظ محليًا على هذا الجهاز فقط';
+    el.style.color = '#FFD9C9';
+  } else {
+    el.textContent = '';
+  }
+}
+
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState === 'visible') manualRefresh();
+});
+
+/* ============ State & constants ============ */
+let state = { classes: [], activeClassId: null };
+let view = 'home'; // 'home' | 'class'
+let pendingModal = null; // function returning modal html + wiring
+
+const PRESET_GROUPS = [
+  {name:'الروبوتات', icon:'🤖', color:'#8C7AE6'},
+  {name:'المبدعات', icon:'💡', color:'#F080A0'},
+  {name:'المبتكرات', icon:'🚀', color:'#3FBFBF'},
+  {name:'العبقريات', icon:'🧠', color:'#A78BFA'},
+  {name:'المستكشفات', icon:'🔎', color:'#F5934D'},
+  {name:'المحترفات', icon:'🏆', color:'#6FBF73'},
+  {name:'المتميزات', icon:'🌟', color:'#F0C136'},
+  {name:'النجمات', icon:'⭐', color:'#5B9EE1'},
+];
+const ICON_CHOICES = ['🤖','💡','🚀','🧠','🔎','🏆','🌟','⭐','👩‍💻','🎯','⚡','🎨','🔬','🛰️','🧩','🎮'];
+const COLOR_CHOICES = ['#8C7AE6','#F080A0','#3FBFBF','#A78BFA','#F5934D','#6FBF73','#F0C136','#5B9EE1','#E4674F','#5CC29E'];
+
+const MILESTONES = [
+  {stars:10, icon:'🎫', label:'بطاقة تشجيعية'},
+  {stars:20, icon:'🎁', label:'سحب مفاجأة'},
+  {stars:30, icon:'✨', label:'امتياز جماعي'},
+  {stars:50, icon:'🏆', label:'قاعة النجوم'},
+];
+
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+/* ============ Init ============ */
+(async function init(){
+  state = await loadState();
+  if(state.activeClassId && !state.classes.find(c=>c.id===state.activeClassId)){
+    state.activeClassId = null;
+  }
+  view = state.activeClassId ? 'class' : 'home';
+  render();
+})();
+
+/* ============ Toast ============ */
+let toastTimer;
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'toast';
+    t.className = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ============ Render ============ */
+function render(){
+  const app = document.getElementById('app');
+  const activeClass = state.classes.find(c=>c.id===state.activeClassId);
+
+  let html = `
+    <div class="topbar">
+      <div class="topbar-title">
+        <h1>💻⭐ مسار نجوم الحاسوب</h1>
+        <p>كل نجمة تقربنا من قمة الإنجاز</p>
+        <p id="syncBadge" style="opacity:.9;font-size:11px;margin-top:6px;font-weight:700;"></p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="icon-btn" id="refreshSyncBtn" title="إعادة محاولة الاتصال بقاعدة البيانات" style="position:relative;z-index:1;">🔄</button>
+        <div class="topbar-emoji">${view==='class' ? '🚩' : '🧑‍🚀'}</div>
+      </div>
+    </div>
+  `;
+
+  if(view === 'home' || !activeClass){
+    html += renderHome();
+  } else {
+    html += renderClassDetail(activeClass);
+  }
+
+  html += `<footer class="note">تُحفظ جميع البيانات تلقائيًا على هذا الجهاز</footer>`;
+
+  app.innerHTML = html;
+  updateSyncBadge();
+  const refreshBtn = document.getElementById('refreshSyncBtn');
+  if(refreshBtn) refreshBtn.onclick = manualRefresh;
+  wireHomeOrDetail(activeClass);
+
+  if(pendingModal){
+    document.body.insertAdjacentHTML('beforeend', pendingModal.html);
+    pendingModal.wire();
+  }
+}
+
+function renderHome(){
+  let html = `<div class="section-heading"><h2>الشُّعب</h2><span>${state.classes.length} شعبة</span></div>`;
+
+  if(state.classes.length === 0){
+    html += `
+      <div class="empty-state">
+        <span class="ee-emoji">🗂️</span>
+        <h3>لا توجد شُعب بعد</h3>
+        <p>أضيفي أول شعبة لتبدأ رحلة النجوم مع طالباتك</p>
+        <button class="btn btn-primary" id="addClassBtn" style="margin-top:10px;">+ إضافة شعبة</button>
+      </div>`;
+    return html;
+  }
+
+  html += `<div class="classes-grid">`;
+  state.classes.forEach(c=>{
+    const total = c.groups.reduce((s,g)=>s+g.stars,0);
+    html += `
+      <div class="class-card" data-open-class="${c.id}">
+        <button class="icon-btn cc-remove" data-remove-class="${c.id}" title="حذف الشعبة">✕</button>
+        <div class="cc-icon">🏫</div>
+        <h3>${escapeHtml(c.name)}</h3>
+        <div class="cc-meta">
+          <span>👥 ${c.groups.length} مجموعة</span>
+        </div>
+        <div class="cc-total">⭐ ${total} نجمة</div>
+      </div>`;
+  });
+  html += `
+      <div class="class-card add-class-card" id="addClassBtn">
+        <div style="font-size:28px;">+</div>
+        <div>إضافة شعبة</div>
+      </div>
+    </div>`;
+  return html;
+}
+
+function renderClassDetail(cls){
+  let html = `
+    <div class="detail-header">
+      <div class="dh-left">
+        <button class="icon-btn back-btn" id="backHomeBtn" title="رجوع">→</button>
+        <div class="class-title">
+          <h2>${escapeHtml(cls.name)}</h2>
+          <button id="renameClassBtn" title="إعادة تسمية">✎</button>
+        </div>
+      </div>
+      <button class="btn btn-danger btn-sm" id="removeClassBtnDetail">حذف الشعبة</button>
+    </div>
+  `;
+
+  if(cls.groups.length === 0){
+    html += `
+      <div class="empty-state">
+        <span class="ee-emoji">🧑‍🤝‍🧑</span>
+        <h3>لا توجد مجموعات في هذه الشعبة</h3>
+        <p>أضيفي مجموعة يدويًا أو ابدئي بالمجموعات الثماني الجاهزة</p>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="addGroupBtn">+ إضافة مجموعة</button>
+          <button class="btn btn-soft" id="quickAddBtn">✨ إضافة المجموعات الثماني الجاهزة</button>
+        </div>
+      </div>`;
+    return html;
+  }
+
+  html += `<div class="groups-grid">`;
+  cls.groups.forEach(g=>{
+    const scale = Math.max(50, Math.ceil((g.stars+10)/10)*10);
+    const pct = Math.min(100, (g.stars/scale)*100);
+    html += `
+      <div class="group-card" style="--gc:${g.color}">
+        <button class="icon-btn gc-remove" data-remove-group="${g.id}" title="حذف المجموعة">✕</button>
+        <div class="gc-top">
+          <div class="gc-badge">${g.icon}</div>
+          <div class="gc-name-row">
+            <input class="gc-name" data-field="name" data-group="${g.id}" value="${escapeAttr(g.name)}" maxlength="24">
+            <input class="gc-leader" data-field="leader" data-group="${g.id}" value="${escapeAttr(g.leader||'')}" placeholder="اسم القائدة (اختياري)" maxlength="24">
+          </div>
+        </div>
+
+        <div class="gc-stars">
+          <button class="gc-star-btn minus" data-star-delta="-1" data-group="${g.id}">−</button>
+          <div class="gc-star-count"><b>⭐ ${g.stars}</b><span>نجمة مجمّعة</span></div>
+          <button class="gc-star-btn" data-star-delta="1" data-group="${g.id}">+</button>
+        </div>
+
+        <div class="gc-track">
+          <div class="gc-track-bar">
+            <div class="gc-track-fill" style="width:${pct}%"></div>
+            <div class="gc-track-icon" style="right:${pct}%">${g.icon}</div>
+            <div class="gc-track-flag">🏁</div>
+          </div>
+          <div class="gc-milestones">
+            ${MILESTONES.map(m=>`
+              <div class="gc-milestone ${g.stars>=m.stars?'done':''}">
+                <span class="m-icon">${m.icon}</span>
+                <span class="m-label">${m.stars}</span>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  });
+
+  html += `
+      <div class="add-group-card" id="addGroupBtn">
+        <div style="font-size:26px;">+</div>
+        <div>إضافة مجموعة</div>
+      </div>
+    </div>`;
+
+  return html;
+}
+
+/* ============ Wiring ============ */
+function wireHomeOrDetail(activeClass){
+  // Home
+  const addClassBtn = document.getElementById('addClassBtn');
+  if(addClassBtn) addClassBtn.onclick = openAddClassModal;
+
+  document.querySelectorAll('[data-open-class]').forEach(el=>{
+    el.onclick = (e)=>{
+      state.activeClassId = el.getAttribute('data-open-class');
+      view = 'class';
+      render();
+    };
+  });
+  document.querySelectorAll('[data-remove-class]').forEach(el=>{
+    el.onclick = (e)=>{
+      e.stopPropagation();
+      const id = el.getAttribute('data-remove-class');
+      const c = state.classes.find(x=>x.id===id);
+      openConfirmModal(`حذف "${c.name}"؟`, 'سيتم حذف جميع مجموعاتها ونجومها نهائيًا.', ()=>{
+        state.classes = state.classes.filter(x=>x.id!==id);
+        if(state.activeClassId===id){ state.activeClassId=null; view='home'; }
+        saveState(); render();
+        showToast('تم حذف الشعبة');
+      });
+    };
+  });
+
+  // Detail
+  const backBtn = document.getElementById('backHomeBtn');
+  if(backBtn) backBtn.onclick = ()=>{ view='home'; state.activeClassId=null; render(); };
+
+  const renameBtn = document.getElementById('renameClassBtn');
+  if(renameBtn) renameBtn.onclick = ()=>openRenameClassModal(activeClass);
+
+  const removeClassDetailBtn = document.getElementById('removeClassBtnDetail');
+  if(removeClassDetailBtn) removeClassDetailBtn.onclick = ()=>{
+    openConfirmModal(`حذف "${activeClass.name}"؟`, 'سيتم حذف جميع مجموعاتها ونجومها نهائيًا.', ()=>{
+      state.classes = state.classes.filter(x=>x.id!==activeClass.id);
+      state.activeClassId = null; view='home';
+      saveState(); render();
+      showToast('تم حذف الشعبة');
+    });
+  };
+
+  const addGroupBtn = document.getElementById('addGroupBtn');
+  if(addGroupBtn) addGroupBtn.onclick = ()=>openAddGroupModal(activeClass);
+
+  const quickAddBtn = document.getElementById('quickAddBtn');
+  if(quickAddBtn) quickAddBtn.onclick = ()=>{
+    PRESET_GROUPS.forEach(p=>{
+      activeClass.groups.push({id:uid(), name:p.name, leader:'', icon:p.icon, color:p.color, stars:0});
+    });
+    saveState(); render();
+    showToast('تمت إضافة المجموعات الثماني');
+  };
+
+  document.querySelectorAll('[data-remove-group]').forEach(el=>{
+    el.onclick = ()=>{
+      const gid = el.getAttribute('data-remove-group');
+      const g = activeClass.groups.find(x=>x.id===gid);
+      openConfirmModal(`حذف مجموعة "${g.name}"؟`, 'سيتم فقدان نجومها المجمّعة.', ()=>{
+        activeClass.groups = activeClass.groups.filter(x=>x.id!==gid);
+        saveState(); render();
+        showToast('تم حذف المجموعة');
+      });
+    };
+  });
+
+  document.querySelectorAll('[data-star-delta]').forEach(el=>{
+    el.onclick = ()=>{
+      const gid = el.getAttribute('data-group');
+      const delta = parseInt(el.getAttribute('data-star-delta'),10);
+      const g = activeClass.groups.find(x=>x.id===gid);
+      g.stars = Math.max(0, g.stars + delta);
+      saveState();
+      render();
+    };
+  });
+
+  document.querySelectorAll('input[data-field]').forEach(el=>{
+    el.oninput = ()=>{
+      const gid = el.getAttribute('data-group');
+      const field = el.getAttribute('data-field');
+      const g = activeClass.groups.find(x=>x.id===gid);
+      g[field] = el.value;
+    };
+    el.onblur = ()=>{ saveState(); };
+  });
+}
+
+/* ============ Modals ============ */
+function closeModal(){
+  const ov = document.getElementById('modalOverlay');
+  if(ov) ov.remove();
+  pendingModal = null;
+}
+
+function openAddClassModal(){
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+          <h3>إضافة شعبة جديدة</h3>
+          <p class="sub">أدخلي اسم الشعبة، مثل: الصف الرابع - أ</p>
+          <div class="field">
+            <label>اسم الشعبة</label>
+            <input type="text" id="newClassName" placeholder="مثال: 4/1">
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-soft" id="cancelModal">إلغاء</button>
+            <button class="btn btn-primary" id="confirmAddClass">إضافة</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      document.getElementById('cancelModal').onclick = closeModal;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
+      const input = document.getElementById('newClassName');
+      input.focus();
+      const submit = ()=>{
+        const name = input.value.trim();
+        if(!name){ input.focus(); return; }
+        const newClass = {id:uid(), name, groups:[]};
+        state.classes.push(newClass);
+        state.activeClassId = newClass.id;
+        view = 'class';
+        closeModal();
+        saveState(); render();
+        showToast('تمت إضافة الشعبة');
+      };
+      document.getElementById('confirmAddClass').onclick = submit;
+      input.onkeydown = (e)=>{ if(e.key==='Enter') submit(); };
+    }
+  };
+  render();
+}
+
+function openRenameClassModal(cls){
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+          <h3>إعادة تسمية الشعبة</h3>
+          <div class="field">
+            <label>اسم الشعبة</label>
+            <input type="text" id="renameClassName" value="${escapeAttr(cls.name)}">
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-soft" id="cancelModal">إلغاء</button>
+            <button class="btn btn-primary" id="confirmRenameClass">حفظ</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      document.getElementById('cancelModal').onclick = closeModal;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
+      const input = document.getElementById('renameClassName');
+      input.focus(); input.select();
+      const submit = ()=>{
+        const name = input.value.trim();
+        if(!name) return;
+        cls.name = name;
+        closeModal(); saveState(); render();
+      };
+      document.getElementById('confirmRenameClass').onclick = submit;
+      input.onkeydown = (e)=>{ if(e.key==='Enter') submit(); };
+    }
+  };
+  render();
+}
+
+function openAddGroupModal(cls){
+  let selectedIcon = ICON_CHOICES[0];
+  let selectedColor = COLOR_CHOICES[cls.groups.length % COLOR_CHOICES.length];
+
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+          <h3>إضافة مجموعة</h3>
+          <p class="sub">اختاري اسمًا ورمزًا ولونًا مميزًا للمجموعة</p>
+          <div class="field">
+            <label>اسم المجموعة</label>
+            <input type="text" id="newGroupName" placeholder="مثال: العبقريات">
+          </div>
+          <div class="field">
+            <label>اسم القائدة (اختياري)</label>
+            <input type="text" id="newGroupLeader" placeholder="مثال: سارة">
+          </div>
+          <div class="field">
+            <label>الرمز</label>
+            <div class="swatches" id="iconSwatches">
+              ${ICON_CHOICES.map(ic=>`<button type="button" class="swatch ${ic===selectedIcon?'selected':''}" data-icon="${ic}">${ic}</button>`).join('')}
+            </div>
+          </div>
+          <div class="field">
+            <label>اللون</label>
+            <div class="swatches" id="colorSwatches">
+              ${COLOR_CHOICES.map(c=>`<button type="button" class="swatch ${c===selectedColor?'selected':''}" data-color="${c}" style="background:${c}"></button>`).join('')}
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-soft" id="cancelModal">إلغاء</button>
+            <button class="btn btn-primary" id="confirmAddGroup">إضافة</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      document.getElementById('cancelModal').onclick = closeModal;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
+      document.querySelectorAll('#iconSwatches .swatch').forEach(el=>{
+        el.onclick = ()=>{
+          selectedIcon = el.getAttribute('data-icon');
+          document.querySelectorAll('#iconSwatches .swatch').forEach(s=>s.classList.remove('selected'));
+          el.classList.add('selected');
+        };
+      });
+      document.querySelectorAll('#colorSwatches .swatch').forEach(el=>{
+        el.onclick = ()=>{
+          selectedColor = el.getAttribute('data-color');
+          document.querySelectorAll('#colorSwatches .swatch').forEach(s=>s.classList.remove('selected'));
+          el.classList.add('selected');
+        };
+      });
+      const nameInput = document.getElementById('newGroupName');
+      nameInput.focus();
+      const submit = ()=>{
+        const name = nameInput.value.trim();
+        if(!name){ nameInput.focus(); return; }
+        const leader = document.getElementById('newGroupLeader').value.trim();
+        cls.groups.push({id:uid(), name, leader, icon:selectedIcon, color:selectedColor, stars:0});
+        closeModal(); saveState(); render();
+        showToast('تمت إضافة المجموعة');
+      };
+      document.getElementById('confirmAddGroup').onclick = submit;
+    }
+  };
+  render();
+}
+
+function openConfirmModal(title, sub, onConfirm){
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+          <h3>${title}</h3>
+          <p class="sub">${sub}</p>
+          <div class="modal-actions">
+            <button class="btn btn-soft" id="cancelModal">إلغاء</button>
+            <button class="btn btn-danger" id="confirmDanger">حذف</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      document.getElementById('cancelModal').onclick = closeModal;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
+      document.getElementById('confirmDanger').onclick = ()=>{ closeModal(); onConfirm(); };
+    }
+  };
+  render();
+}
+
+/* ============ Utils ============ */
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s){ return escapeHtml(s); }
+</script>
+</body>
+</html>
