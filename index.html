@@ -247,6 +247,12 @@ const LOCAL_KEY = 'reward-tracker-state';
 let lastSyncedAt = null;
 let syncStatus = 'unknown'; // 'online' | 'offline' | 'unknown'
 
+function fetchWithTimeout(url, options = {}, timeoutMs = 6000){
+  const controller = new AbortController();
+  const timer = setTimeout(()=>controller.abort(), timeoutMs);
+  return fetch(url, { ...options, signal: controller.signal }).finally(()=>clearTimeout(timer));
+}
+
 async function localGet(){
   try{
     const res = await window.storage.get(LOCAL_KEY, false);
@@ -260,7 +266,7 @@ async function localSet(){
 
 async function loadState(){
   try{
-    const res = await fetch(FIREBASE_URL, { cache:'no-store' });
+    const res = await fetchWithTimeout(FIREBASE_URL, { cache:'no-store' });
     if(!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     lastSyncedAt = new Date();
@@ -285,7 +291,7 @@ async function saveState(){
   // Always keep a local backup so nothing is ever lost.
   await localSet();
   try{
-    const res = await fetch(FIREBASE_URL, {
+    const res = await fetchWithTimeout(FIREBASE_URL, {
       method: 'PUT',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(state)
@@ -361,7 +367,12 @@ function uid(){ return Date.now().toString(36) + Math.random().toString(36).slic
 
 /* ============ Init ============ */
 (async function init(){
-  state = await loadState();
+  try{
+    state = await loadState();
+  }catch(e){
+    console.error('Init load failed unexpectedly', e);
+    state = { classes: [], activeClassId: null };
+  }
   if(state.activeClassId && !state.classes.find(c=>c.id===state.activeClassId)){
     state.activeClassId = null;
   }
