@@ -925,14 +925,15 @@ const ENCOURAGEMENT_PHRASES = [
   'ما شاء الله عليكِ! أداء مبهر 👏',
   'فخورون بكِ، واصلي التألق 💫',
   'عمل ممتاز! أنتِ قدوة لزميلاتك 🏆',
-  'مجهود رائع، استمري 🌸',
-  'تستحقين كل التقدير، أحسنتِ  🎉',
+  'بالتوفيق دائمًا يا نجمة الصف ✨',
+  'مجهود رائع، استمري في العطاء 🌸',
+  'تستحقين كل التقدير، أحسنتِ صنعًا 🎉',
   'إبداع لا يتوقف، بارك الله فيكِ 💎',
   'خطوة أخرى نحو القمة، أحسنتِ 🚀',
-  ' مجتهدة ونتيجة رائعة، أحسنتِ 💜',
+  'قلبٌ مجتهد ونتيجة رائعة، أحسنتِ 💜',
   'أنتِ مصدر فخر لنا جميعًا 🌟',
   'استمري.. النجاح حليفكِ دائمًا 🏅',
-  ' جهد رائع، واصلي بنفس الحماس 🔥',
+  'شكرًا لاجتهادك، واصلي بنفس الحماس 🔥',
   'تألقٌ يستحق كل هذا التصفيق 👏',
 ];
 
@@ -1522,7 +1523,22 @@ function wireHomeOrDetail(activeClass){
 
 }
 
+function stopAllSounds(){
+  try{
+    if(applauseAudioEl){
+      applauseAudioEl.pause();
+      applauseAudioEl.currentTime = 0;
+    }
+  } catch(e){}
+  try{
+    if(audioCtx && audioCtx.state === 'running'){
+      audioCtx.suspend();
+    }
+  } catch(e){}
+}
+
 function closeModal(){
+  stopAllSounds();
   const ov = document.getElementById('modalOverlay');
   if(ov) ov.remove();
   pendingModal = null;
