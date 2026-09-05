@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>مسار نجوم الحاسوب</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800&family=Tajawal:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap');
 
 :root{
   --canvas:#F6F4FF;
@@ -33,10 +33,10 @@ body{
 }
 h1,h2,h3,.display{font-family:'Cairo',sans-serif;}
 button{font-family:inherit;cursor:pointer;}
-input{font-family:inherit;}
+input,textarea,select{font-family:inherit;}
 
 /* ===== Shell ===== */
-#app{max-width:1180px;margin:0 auto;padding:20px 20px 60px;}
+#app{max-width:1280px;margin:0 auto;padding:20px 20px 60px;}
 
 .topbar{
   display:flex;align-items:center;justify-content:space-between;gap:16px;
@@ -56,7 +56,22 @@ input{font-family:inherit;}
 .topbar-title{position:relative;z-index:1;}
 .topbar-title h1{margin:0;font-size:26px;font-weight:800;}
 .topbar-title p{margin:4px 0 0;font-size:13.5px;color:#DCD5FF;font-weight:500;}
-.topbar-emoji{font-size:34px;position:relative;z-index:1;filter:drop-shadow(0 4px 6px rgba(0,0,0,.2));}
+.topbar-user{
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.user-badge{
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
 
 /* ===== Buttons ===== */
 .btn{
@@ -70,6 +85,8 @@ input{font-family:inherit;}
 .btn-ghost:hover{background:rgba(255,255,255,.22);}
 .btn-soft{background:var(--panel);color:var(--ink);border:1.5px solid var(--line);}
 .btn-soft:hover{border-color:#C9BFF5;}
+.btn-accent{background:#7C63C9;color:#fff;}
+.btn-accent:hover{background:#684FA8;}
 .btn-danger{background:#FCE7E2;color:#B23E28;}
 .btn-danger:hover{background:#FAD8CF;}
 .btn-sm{padding:6px 10px;font-size:12.5px;border-radius:10px;}
@@ -84,7 +101,7 @@ input{font-family:inherit;}
 .spinner{width:34px;height:34px;border-radius:50%;border:4px solid #E1DAFA;border-top-color:#7C63C9;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ===== Classes grid (home) ===== */
+/* ===== Classes grid ===== */
 .section-heading{display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px;}
 .section-heading h2{margin:0;font-size:19px;font-weight:800;}
 .section-heading span{color:var(--ink-soft);font-size:13px;font-weight:500;}
@@ -111,14 +128,12 @@ input{font-family:inherit;}
 }
 .add-class-card:hover{background:rgba(124,99,201,.09);}
 
-.empty-state{
-  text-align:center;padding:60px 20px;color:var(--ink-soft);
-}
+.empty-state{text-align:center;padding:50px 20px;color:var(--ink-soft);}
 .empty-state .ee-emoji{font-size:44px;display:block;margin-bottom:10px;}
 .empty-state h3{color:var(--ink);margin:0 0 6px;}
 
 /* ===== Class detail ===== */
-.detail-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:26px 0 6px;flex-wrap:wrap;}
+.detail-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:26px 0 16px;flex-wrap:wrap;}
 .detail-header .dh-left{display:flex;align-items:center;gap:10px;}
 .back-btn{background:var(--panel);border:1.5px solid var(--line);}
 .class-title{display:flex;align-items:center;gap:8px;}
@@ -126,8 +141,361 @@ input{font-family:inherit;}
 .class-title button{background:none;border:none;color:var(--ink-soft);font-size:15px;}
 .class-title button:hover{color:#7C63C9;}
 
-.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;margin-top:18px;}
+.action-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
 
+/* ===== Tabs ===== */
+.tab-nav{display:flex;gap:8px;border-bottom:2px solid var(--line);margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{
+  padding:10px 18px;border:none;background:none;font-weight:700;font-size:15px;color:var(--ink-soft);
+  border-bottom:3px solid transparent;margin-bottom:-2px;transition:.15s;
+}
+.tab-btn.active{color:#7C63C9;border-bottom-color:#7C63C9;}
+
+/* ===== Top 3 Podium Section ===== */
+.top-three-wrapper{
+  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%);
+  border: 2px solid rgba(245, 184, 65, 0.4);
+  border-radius: 26px;
+  padding: 28px 20px 24px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -10px rgba(49, 46, 129, 0.45);
+}
+.top-three-wrapper::before{
+  content:"";
+  position:absolute;
+  top:-50%; left:-50%; width:200%; height:200%;
+  background: radial-gradient(circle, rgba(245,184,65,0.18) 0%, transparent 55%);
+  pointer-events:none;
+}
+.top-three-title{
+  text-align: center;
+  font-size: 20px;
+  font-weight: 900;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+.top-three-title .title-text{
+  background: linear-gradient(90deg, #FFE259, #FFA751);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Cairo', sans-serif;
+  letter-spacing: .3px;
+}
+.top-three-container{
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+.podium-card{
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  border-radius: 22px;
+  padding: 22px 14px 18px;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.22);
+  flex: 1;
+  min-width: 150px;
+  max-width: 210px;
+  position: relative;
+  transition: transform .2s ease;
+}
+.podium-card:hover{
+  transform: translateY(-5px);
+}
+.podium-1{
+  order: 2;
+  border: 3px solid #F5B841;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF0 100%);
+  transform: scale(1.08);
+  box-shadow: 0 16px 36px rgba(245, 184, 65, 0.4);
+  z-index: 2;
+}
+.podium-1:hover{
+  transform: scale(1.1) translateY(-5px);
+}
+.podium-2{
+  order: 1;
+  border: 2px solid #CBD5E1;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+.podium-3{
+  order: 3;
+  border: 2px solid #E28743;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFF8F5 100%);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+}
+.rank-badge{
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  background: #ffffff;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  border: 2px solid #F5B841;
+}
+.podium-2 .rank-badge{ border-color: #94A3B8; }
+.podium-3 .rank-badge{ border-color: #D97706; }
+
+.podium-title{
+  font-size: 13px;
+  font-weight: 800;
+  margin-top: 10px;
+  font-family: 'Cairo', sans-serif;
+}
+.podium-1 .podium-title{ color: #D98F1E; }
+.podium-2 .podium-title{ color: #64748B; }
+.podium-3 .podium-title{ color: #B45309; }
+
+.podium-avatar{
+  margin: 10px auto 8px;
+  width: 58px;
+  height: 58px;
+  font-size: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+.podium-1 .podium-avatar{
+  width: 66px;
+  height: 66px;
+  font-size: 34px;
+  border: 3px solid #F5B841;
+  box-shadow: 0 6px 16px rgba(245, 184, 65, 0.45);
+}
+
+.podium-name{
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--ink);
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+
+.podium-points{
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFF7ED;
+  border: 1.5px solid #FFEDD5;
+  color: #D97706;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-weight: 800;
+  font-size: 13px;
+}
+.podium-1 .podium-points{
+  background: #FEF3C7;
+  border-color: #FDE68A;
+  color: #B45309;
+  font-size: 14px;
+  padding: 5px 14px;
+}
+
+/* ===== Student Cards Grid ===== */
+.students-grid{
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  gap:12px;
+}
+
+@media (max-width: 1100px) {
+  .students-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 880px) {
+  .students-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .students-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 420px) {
+  .students-grid { grid-template-columns: 1fr; }
+}
+
+.student-card{
+  background:var(--panel);
+  border-radius:var(--radius);
+  padding:18px;
+  position:relative;
+  box-shadow:var(--shadow);
+  border-top:5px solid var(--sc,#7C63C9);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  transition:.15s transform ease;
+}
+.student-card:hover{transform:translateY(-3px);}
+
+.student-card .st-remove{
+  position:absolute;
+  top:14px;
+  left:14px;
+  background:none;
+  border:none;
+  font-weight:800;
+  font-size:16px;
+  color:var(--ink-soft);
+  cursor:pointer;
+  padding:0;
+  line-height:1;
+  z-index:2;
+}
+.student-card .st-remove:hover{color:var(--danger);}
+
+.student-card .student-avatar{
+  position:absolute;
+  top:12px;
+  right:14px;
+  width:46px;
+  height:46px;
+  border-radius:14px;
+  background:color-mix(in srgb, var(--sc,#7C63C9) 16%, white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  margin:0;
+}
+
+.student-card .student-name{
+  font-family:'Cairo',sans-serif;
+  font-weight:800;
+  font-size:16.5px;
+  color:var(--ink);
+  margin-top:4px;
+  margin-bottom:10px;
+  text-align:center;
+  width:100%;
+  padding-inline:52px 4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.student-card .student-info-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:12px;
+  font-weight:700;
+  color:var(--ink-soft);
+  background:#F9F8FF;
+  padding:5px 10px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.student-card .student-stats-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  margin-top:14px;
+  gap:8px;
+}
+
+.student-card .student-points-center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  line-height:1;
+}
+.student-card .student-points-center b{
+  font-size:22px;
+  font-family:'Cairo',sans-serif;
+  color:var(--ink);
+}
+.student-card .student-points-center span{
+  font-size:10.5px;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+
+.student-card .st-btn-plus{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  border:none;
+  background:#EBE7FF;
+  color:#4a3ba8;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.1s transform;
+  flex-shrink:0;
+}
+.student-card .st-btn-plus:active{transform:scale(.92);}
+
+.student-card .st-btn-minus{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  border:none;
+  background:#FCE7E2;
+  color:#B23E28;
+  font-size:17px;
+  font-weight:800;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.1s transform;
+  flex-shrink:0;
+}
+.student-card .st-btn-minus:active{transform:scale(.92);}
+
+.student-card .st-edit{
+  width:100%;
+  margin-top:14px;
+  background:#F9F8FF;
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  padding:6px 8px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+}
+.student-card .st-edit:hover{color:#7c63c9;border-color:#C9BFF5;}
+
+/* ===== Groups grid ===== */
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;}
 .group-card{
   background:var(--panel);border-radius:var(--radius);padding:18px;position:relative;
   box-shadow:var(--shadow);border-top:5px solid var(--gc,#7C63C9);
@@ -147,10 +515,21 @@ input{font-family:inherit;}
   border:none;background:transparent;font-size:12.5px;color:var(--ink-soft);width:100%;margin-top:2px;
   border-bottom:1.5px dashed transparent;padding:2px 0;
 }
-.gc-leader:focus{outline:none;border-bottom-color:#C9BFF5;}
-.gc-leader::placeholder{color:#B7B2D6;}
+.gc-members-box{
+  margin-top:12px;background:#F9F8FF;padding:10px;border-radius:12px;border:1px solid var(--line);
+  font-size:12px;
+}
+.gc-members-title{font-weight:700;color:var(--ink-soft);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.gc-members-list{display:flex;flex-wrap:wrap;gap:4px;}
+.member-tag{
+  background:#fff;border:1px solid #DCD5FF;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:600;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.member-tag button{
+  background:none;border:none;color:#B23E28;font-weight:800;cursor:pointer;padding:0;font-size:12px;
+}
 
-.gc-stars{display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:8px;}
+.gc-stars{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:8px;}
 .gc-star-btn{
   width:34px;height:34px;border-radius:11px;border:none;font-size:18px;font-weight:800;
   background:#F1EEFB;color:var(--ink);
@@ -161,7 +540,7 @@ input{font-family:inherit;}
 .gc-star-count b{font-size:24px;font-family:'Cairo',sans-serif;}
 .gc-star-count span{font-size:11px;color:var(--ink-soft);margin-top:2px;}
 
-.gc-track{margin-top:16px;}
+.gc-track{margin-top:14px;}
 .gc-track-bar{height:10px;border-radius:100px;background:#F0EEFA;position:relative;overflow:visible;}
 .gc-track-fill{
   position:absolute;top:0;right:0;height:100%;border-radius:100px;
@@ -180,13 +559,12 @@ input{font-family:inherit;}
 
 .gc-remove{position:absolute;top:12px;left:12px;}
 
-.add-group-card{
+.add-card{
   border:2px dashed #C9BFF5;border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:8px;color:#7C63C9;font-weight:700;background:rgba(124,99,201,.04);min-height:190px;
+  justify-content:center;gap:8px;color:#7C63C9;font-weight:700;background:rgba(124,99,201,.04);
+  min-height:160px;cursor:pointer;transition:.15s;
 }
-.add-group-card:hover{background:rgba(124,99,201,.09);}
-.quick-add-note{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:6px;font-weight:500;}
-.quick-add-note button{background:none;border:none;color:#7C63C9;font-weight:700;text-decoration:underline;padding:0;}
+.add-card:hover{background:rgba(124,99,201,.09);}
 
 /* ===== Modal ===== */
 .modal-overlay{
@@ -194,24 +572,40 @@ input{font-family:inherit;}
   display:flex;align-items:center;justify-content:center;padding:16px;z-index:50;
 }
 .modal{
-  background:#fff;border-radius:22px;padding:24px;width:100%;max-width:420px;box-shadow:0 24px 60px -18px rgba(36,31,71,.5);
+  background:#fff;border-radius:22px;padding:24px;width:100%;max-width:520px;box-shadow:0 24px 60px -18px rgba(36,31,71,.5);
   max-height:90vh;overflow-y:auto;
 }
 .modal h3{margin:0 0 4px;font-size:18px;}
 .modal p.sub{margin:0 0 16px;color:var(--ink-soft);font-size:13px;}
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
-.field input[type=text]{
+.field input[type=text], .field input[type=password], .field input[type=date], .field textarea, .field select{
   width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14.5px;color:var(--ink);
+  background:#fff;
 }
-.field input[type=text]:focus{outline:none;border-color:#7C63C9;}
+.field input:focus, .field textarea:focus, .field select:focus{outline:none;border-color:#7C63C9;}
 .swatches{display:flex;flex-wrap:wrap;gap:8px;}
 .swatch{
   width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;
-  border:2px solid transparent;background:#F6F4FF;
+  border:2px solid transparent;background:#F6F4FF;cursor:pointer;
 }
-.swatch.selected{border-color:var(--ink);}
+.swatch.selected{border-color:var(--ink);background:#E1DAFA;}
 .modal-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
+
+/* ===== Wheel & Random Pick Canvas ===== */
+.wheel-container{display:flex;flex-direction:column;align-items:center;position:relative;margin-top:10px;}
+.wheel-pointer{
+  width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;
+  border-top:22px solid #E4674F;position:absolute;top:-10px;z-index:10;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
+}
+#wheelCanvas{border-radius:50%;box-shadow:0 8px 24px rgba(0,0,0,.15);background:#fff;}
+
+.winner-box{
+  text-align:center;padding:20px;background:#F8F6FF;border-radius:16px;border:2px dashed #7C63C9;
+  margin-top:16px;animation:pop .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes pop{from{transform:scale(.8);opacity:0;} to{transform:scale(1);opacity:1;}}
 
 .toast{
   position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;
@@ -226,11 +620,15 @@ footer.note{margin-top:34px;text-align:center;color:var(--ink-soft);font-size:12
   .topbar{padding:16px 18px;flex-wrap:wrap;}
   .topbar-title h1{font-size:20px;}
   #app{padding:14px 12px 40px;}
+  .top-three-container{flex-direction:column;align-items:center;}
+  .podium-card{order:unset !important;width:100%;max-width:100%;transform:none !important;}
 }
 </style>
 </head>
 <body>
-<div id="app">
+
+<!-- Main System Shell -->
+<div id="app" style="display:none;">
   <div class="loading" id="loadingState">
     <div class="spinner"></div>
     <div>جارِ تحميل مسار النجوم...</div>
@@ -238,49 +636,62 @@ footer.note{margin-top:34px;text-align:center;color:var(--ink-soft);font-size:12
 </div>
 
 <script>
-/* ============ Storage helpers (Firebase Realtime Database, with local fallback) ============ */
-const FIREBASE_BASE = 'https://rewards-46118-default-rtdb.firebaseio.com';
-const FIREBASE_PATH = 'reward-tracker-state';
-const FIREBASE_URL = `${FIREBASE_BASE}/${FIREBASE_PATH}.json`;
-const LOCAL_KEY = 'reward-tracker-state';
+/* ============ Storage Config (بدون تسجيل دخول - قاعدة بيانات مشتركة واحدة) ============ */
+const FIREBASE_BASE = 'https://schoolproject-97946-default-rtdb.firebaseio.com';
+const DATA_PATH = `${FIREBASE_BASE}/app-data.json`;
+const LOCAL_DATA_KEY = 'reward-tracker-state';
 
+function showApp(){
+  document.getElementById('app').style.display = 'block';
+  initSystem();
+}
+
+/* ============ Storage helpers ============ */
 let lastSyncedAt = null;
-let syncStatus = 'unknown'; // 'online' | 'offline' | 'unknown'
+let syncStatus = 'unknown';
 
 function fetchWithTimeout(url, options = {}, timeoutMs = 6000){
-  const controller = new AbortController();
-  const timer = setTimeout(()=>controller.abort(), timeoutMs);
-  return fetch(url, { ...options, signal: controller.signal }).finally(()=>clearTimeout(timer));
+  // ملاحظة: تم تفادي استخدام AbortController/AbortSignal هنا عمداً لأن بعض بيئات
+  // المعاينة المحمية (sandboxed iframe) تفشل عند محاولة نسخ AbortSignal عبر postMessage
+  // مما يسبب الخطأ: DataCloneError: Failed to execute 'postMessage' ... AbortSignal object could not be cloned.
+  return Promise.race([
+    fetch(url, options),
+    new Promise((_, reject) => setTimeout(()=>reject(new Error('انتهت مهلة الاتصال بقاعدة البيانات')), timeoutMs))
+  ]);
 }
 
-async function localGet(){
+function localGet(){
   try{
-    const res = await window.storage.get(LOCAL_KEY, false);
-    return res && res.value ? JSON.parse(res.value) : null;
+    const raw = window.localStorage.getItem(LOCAL_DATA_KEY);
+    return raw ? JSON.parse(raw) : null;
   }catch(e){ return null; }
 }
-async function localSet(){
-  try{ await window.storage.set(LOCAL_KEY, JSON.stringify(state), false); }
+
+function localSet(){
+  try{ window.localStorage.setItem(LOCAL_DATA_KEY, JSON.stringify(state)); }
   catch(e){ console.error('Local backup save failed', e); }
 }
 
-async function loadState(){
+async function loadRemoteState(){
   try{
-    const res = await fetchWithTimeout(FIREBASE_URL, { cache:'no-store' });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
+    const result = await Promise.race([
+      fetchWithTimeout(DATA_PATH, { cache:'no-store' }, 6000).then(async res=>{
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        return await res.json();
+      }),
+      new Promise(resolve => setTimeout(()=>resolve({__timedOut:true}), 6500))
+    ]);
+    if(result && result.__timedOut) throw new Error('Firebase request timed out');
     lastSyncedAt = new Date();
     syncStatus = 'online';
-    if(data && typeof data === 'object'){
-      return { classes: Array.isArray(data.classes) ? data.classes : [], activeClassId: data.activeClassId || null };
+    if(result && typeof result === 'object'){
+      return { classes: Array.isArray(result.classes) ? result.classes : [], activeClassId: result.activeClassId || null };
     }
     return { classes: [], activeClassId: null };
   }catch(e){
     console.error('Firebase load error', e);
     syncStatus = 'offline';
-    const local = await localGet();
-    if(local) return local;
-    return { classes: [], activeClassId: null };
+    return null;
   }
 }
 
@@ -288,10 +699,9 @@ let saving = false, pendingSave = false;
 async function saveState(){
   if(saving){ pendingSave = true; return; }
   saving = true;
-  // Always keep a local backup so nothing is ever lost.
-  await localSet();
+  localSet();
   try{
-    const res = await fetchWithTimeout(FIREBASE_URL, {
+    const res = await fetchWithTimeout(DATA_PATH, {
       method: 'PUT',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(state)
@@ -311,13 +721,16 @@ async function saveState(){
 
 async function manualRefresh(){
   showToast('جارِ إعادة المحاولة...');
-  const fresh = await loadState();
-  state = fresh;
-  if(state.activeClassId && !state.classes.find(c=>c.id===state.activeClassId)){
-    state.activeClassId = null; view = 'home';
+  const remote = await loadRemoteState();
+  if(remote){
+    state = remote;
+    if(state.activeClassId && !state.classes.find(c=>c.id===state.activeClassId)){
+      state.activeClassId = null; view = 'home';
+    }
+    localSet();
   }
   render();
-  showToast(syncStatus === 'online' ? 'تم الاتصال بقاعدة البيانات ✅' : 'ما زال الاتصال بقاعدة البيانات غير متاح، يتم الحفظ محليًا');
+  showToast(syncStatus === 'online' ? 'تم الاتصال بقاعدة البيانات ✅' : 'ما زال الاتصال غير متاح، يتم الحفظ محليًا');
 }
 
 function updateSyncBadge(){
@@ -327,21 +740,21 @@ function updateSyncBadge(){
     el.textContent = '✅ متصل — آخر مزامنة: ' + (lastSyncedAt ? lastSyncedAt.toLocaleTimeString('ar', {hour:'2-digit', minute:'2-digit'}) : '');
     el.style.color = '#C9F5DA';
   } else if(syncStatus === 'offline'){
-    el.textContent = '⚠️ غير متصل بقاعدة البيانات — يتم الحفظ محليًا على هذا الجهاز فقط';
+    el.textContent = '⚠️ غير متصل بقاعدة البيانات — يتم الحفظ محليًا';
     el.style.color = '#FFD9C9';
   } else {
     el.textContent = '';
   }
 }
 
-document.addEventListener('visibilitychange', ()=>{
-  if(document.visibilityState === 'visible') manualRefresh();
-});
-
-/* ============ State & constants ============ */
+/* ============ Constants & State ============ */
 let state = { classes: [], activeClassId: null };
-let view = 'home'; // 'home' | 'class'
-let pendingModal = null; // function returning modal html + wiring
+let view = 'home'; 
+let activeTab = 'students'; // 'students' | 'groups'
+let pendingModal = null;
+let hideTopThree = false;
+
+const STUDENT_AVATARS = ['🦸‍♀️', '🧝‍♀️', '🧙‍♀️', '🧚‍♀️', '👩‍🚀', '👩‍🔬', '👩‍🎨', '👸', '🦄', '🐱', '🦊', '🐰', '🐼', '🧜‍♀️', '🐥', '🦋', '🐝', '🐬', '🦁', '🐻', '👑', '⭐', '💻', '🚀'];
 
 const PRESET_GROUPS = [
   {name:'الروبوتات', icon:'🤖', color:'#8C7AE6'},
@@ -353,6 +766,7 @@ const PRESET_GROUPS = [
   {name:'المتميزات', icon:'🌟', color:'#F0C136'},
   {name:'النجمات', icon:'⭐', color:'#5B9EE1'},
 ];
+
 const ICON_CHOICES = ['🤖','💡','🚀','🧠','🔎','🏆','🌟','⭐','👩‍💻','🎯','⚡','🎨','🔬','🛰️','🧩','🎮'];
 const COLOR_CHOICES = ['#8C7AE6','#F080A0','#3FBFBF','#A78BFA','#F5934D','#6FBF73','#F0C136','#5B9EE1','#E4674F','#5CC29E'];
 
@@ -365,22 +779,18 @@ const MILESTONES = [
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
 
-/* ============ Init ============ */
-(async function init(){
-  try{
-    state = await loadState();
-  }catch(e){
-    console.error('Init load failed unexpectedly', e);
-    state = { classes: [], activeClassId: null };
+async function initSystem(){
+  const remote = await loadRemoteState();
+  if(remote){
+    state = remote;
+  } else {
+    state = localGet() || { classes: [], activeClassId: null };
   }
-  if(state.activeClassId && !state.classes.find(c=>c.id===state.activeClassId)){
-    state.activeClassId = null;
-  }
-  view = state.activeClassId ? 'class' : 'home';
   render();
-})();
+}
 
-/* ============ Toast ============ */
+showApp();
+
 let toastTimer;
 function showToast(msg){
   let t = document.getElementById('toast');
@@ -396,9 +806,14 @@ function showToast(msg){
   toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
 }
 
-/* ============ Render ============ */
+function sanitizeClass(c){
+  if(!Array.isArray(c.groups)) c.groups = [];
+  if(!Array.isArray(c.students)) c.students = [];
+}
+
 function render(){
   const app = document.getElementById('app');
+  state.classes.forEach(sanitizeClass);
   const activeClass = state.classes.find(c=>c.id===state.activeClassId);
 
   let html = `
@@ -408,9 +823,8 @@ function render(){
         <p>كل نجمة تقربنا من قمة الإنجاز</p>
         <p id="syncBadge" style="opacity:.9;font-size:11px;margin-top:6px;font-weight:700;"></p>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <button class="icon-btn" id="refreshSyncBtn" title="إعادة محاولة الاتصال بقاعدة البيانات" style="position:relative;z-index:1;">🔄</button>
-        <div class="topbar-emoji">${view==='class' ? '🚩' : '🧑‍🚀'}</div>
+      <div class="topbar-user">
+        <button class="icon-btn" id="refreshSyncBtn" title="تحديث">🔄</button>
       </div>
     </div>
   `;
@@ -421,12 +835,14 @@ function render(){
     html += renderClassDetail(activeClass);
   }
 
-  html += `<footer class="note">تُحفظ جميع البيانات تلقائيًا على هذا الجهاز</footer>`;
+  html += `<footer class="note">تُحفظ جميع البيانات تلقائيًا في قاعدة البيانات</footer>`;
 
   app.innerHTML = html;
   updateSyncBadge();
+
   const refreshBtn = document.getElementById('refreshSyncBtn');
   if(refreshBtn) refreshBtn.onclick = manualRefresh;
+
   wireHomeOrDetail(activeClass);
 
   if(pendingModal){
@@ -443,7 +859,7 @@ function renderHome(){
       <div class="empty-state">
         <span class="ee-emoji">🗂️</span>
         <h3>لا توجد شُعب بعد</h3>
-        <p>أضيفي أول شعبة لتبدأ رحلة النجوم مع طالباتك</p>
+        <p>أضيفي أول شعبة لتبدأ رحلة النجوم</p>
         <button class="btn btn-primary" id="addClassBtn" style="margin-top:10px;">+ إضافة شعبة</button>
       </div>`;
     return html;
@@ -451,16 +867,18 @@ function renderHome(){
 
   html += `<div class="classes-grid">`;
   state.classes.forEach(c=>{
-    const total = c.groups.reduce((s,g)=>s+g.stars,0);
+    const totalG = c.groups.reduce((s,g)=>s+g.stars,0);
+    const totalS = c.students.reduce((s,st)=>s+(st.points||0),0);
     html += `
       <div class="class-card" data-open-class="${c.id}">
         <button class="icon-btn cc-remove" data-remove-class="${c.id}" title="حذف الشعبة">✕</button>
         <div class="cc-icon">🏫</div>
         <h3>${escapeHtml(c.name)}</h3>
         <div class="cc-meta">
+          <span>👩‍🎓 ${c.students.length} طالبة</span>
           <span>👥 ${c.groups.length} مجموعة</span>
         </div>
-        <div class="cc-total">⭐ ${total} نجمة</div>
+        <div class="cc-total">⭐ ${totalG + totalS} نجمة ونقطة</div>
       </div>`;
   });
   html += `
@@ -468,7 +886,7 @@ function renderHome(){
         <div style="font-size:28px;">+</div>
         <div>إضافة شعبة</div>
       </div>
-    </div>`;
+    `;
   return html;
 }
 
@@ -482,7 +900,125 @@ function renderClassDetail(cls){
           <button id="renameClassBtn" title="إعادة تسمية">✎</button>
         </div>
       </div>
-      <button class="btn btn-danger btn-sm" id="removeClassBtnDetail">حذف الشعبة</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-soft btn-sm" id="backHomeBtnLabeled">🏠 العودة إلى جميع الشُّعب</button>
+        <button class="btn btn-danger btn-sm" id="removeClassBtnDetail">حذف الشعبة</button>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn btn-primary" id="openWheelBtn">🎡 العجلة الدوارة</button>
+      <button class="btn btn-accent" id="openQuickPickBtn">🎲 اختيار عشوائي سريع</button>
+      <button class="btn btn-soft" id="openDevicePickBtn">💻 اختيار عشوائي برقم الجهاز</button>
+    </div>
+
+    <div class="tab-nav">
+      <button class="tab-btn ${activeTab==='students'?'active':''}" id="tabStudentsBtn">👩‍🎓 التعزيز الفردي (${cls.students.length})</button>
+      <button class="tab-btn ${activeTab==='groups'?'active':''}" id="tabGroupsBtn">👥 إدارة المجموعات (${cls.groups.length})</button>
+    </div>
+  `;
+
+  if(activeTab === 'groups'){
+    html += renderGroupsTab(cls);
+  } else {
+    html += renderStudentsTab(cls);
+  }
+
+  return html;
+}
+
+function renderStudentsTab(cls){
+  let html = `
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="addStudentBtn">+ إضافة طالبة فردية</button>
+        <button class="btn btn-soft" id="bulkAddStudentBtn">📋 إضافة جماعية</button>
+      </div>
+      <button class="btn btn-soft btn-sm" id="toggleTopThreeBtn">
+        ${hideTopThree ? '👁️ إظهار المراكز الثلاثة الأولى' : '🙈 إخفاء المراكز الثلاثة الأولى'}
+      </button>
+    </div>
+  `;
+
+  if(cls.students.length === 0){
+    html += `
+      <div class="empty-state">
+        <span class="ee-emoji">👩‍🎓</span>
+        <h3>لا توجد طالبات في هذه الشعبة</h3>
+      </div>`;
+    return html;
+  }
+
+  const sortedStudents = [...cls.students].sort((a,b) => (b.points || 0) - (a.points || 0));
+  const top3 = sortedStudents.filter(s => (s.points || 0) > 0).slice(0, 3);
+
+  if(top3.length > 0 && !hideTopThree){
+    const medals = ['🥇', '🥈', '🥉'];
+    const titles = ['المركز الأول', 'المركز الثاني', 'المركز الثالث'];
+    const podiumClasses = ['podium-1', 'podium-2', 'podium-3'];
+
+    html += `
+      <div class="top-three-wrapper">
+        <div class="top-three-title">
+          <span>✨</span>
+          <span class="title-text">المراكز الثلاثة الأولى في التعزيز الفردي</span>
+          <span>🏆</span>
+        </div>
+        <div class="top-three-container">`;
+    
+    top3.forEach((st, idx) => {
+      html += `
+        <div class="podium-card ${podiumClasses[idx]}">
+          <div class="rank-badge">${medals[idx]}</div>
+          <div class="podium-title">${titles[idx]}</div>
+          <div class="podium-avatar">${st.avatar || '👩‍🎓'}</div>
+          <div class="podium-name">${escapeHtml(st.name)}</div>
+          <div class="podium-points">⭐ ${st.points || 0} نقطة</div>
+        </div>`;
+    });
+
+    html += `
+        </div>
+      </div>`;
+  }
+
+  html += `<div class="students-grid">`;
+  cls.students.forEach(st => {
+    html += `
+      <div class="student-card">
+        <button class="st-remove" data-remove-student="${st.id}" title="حذف">X</button>
+        <div class="student-avatar">${st.avatar || '👩‍🎓'}</div>
+        <div class="student-name">${escapeHtml(st.name)}</div>
+        <div class="student-info-badge">💻 جهاز: ${st.deviceNum ? escapeHtml(st.deviceNum) : '-'}</div>
+        <div class="student-stats-row">
+          <button class="st-btn-plus" data-st-delta="1" data-student="${st.id}">+</button>
+          <div class="student-points-center">
+            <b>⭐ ${st.points || 0}</b>
+            <span>نقطة</span>
+          </div>
+          <button class="st-btn-minus" data-st-delta="-1" data-student="${st.id}">-</button>
+        </div>
+        <button class="st-edit" data-edit-student="${st.id}">✏️ تعديل</button>
+      </div>`;
+  });
+
+  html += `
+      <div class="add-card" id="gridAddStudentBtn">
+        <div style="font-size:26px;">+</div>
+        <div>إضافة طالبة</div>
+      </div>
+    </div>`;
+
+  return html;
+}
+
+function renderGroupsTab(cls){
+  let html = `
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="addGroupBtn">+ إضافة مجموعة جديدة</button>
+        <button class="btn btn-soft" id="quickAddBtn">✨ المجموعات الثماني الجاهزة</button>
+      </div>
     </div>
   `;
 
@@ -491,11 +1027,6 @@ function renderClassDetail(cls){
       <div class="empty-state">
         <span class="ee-emoji">🧑‍🤝‍🧑</span>
         <h3>لا توجد مجموعات في هذه الشعبة</h3>
-        <p>أضيفي مجموعة يدويًا أو ابدئي بالمجموعات الثماني الجاهزة</p>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
-          <button class="btn btn-primary" id="addGroupBtn">+ إضافة مجموعة</button>
-          <button class="btn btn-soft" id="quickAddBtn">✨ إضافة المجموعات الثماني الجاهزة</button>
-        </div>
       </div>`;
     return html;
   }
@@ -504,6 +1035,8 @@ function renderClassDetail(cls){
   cls.groups.forEach(g=>{
     const scale = 50;
     const pct = Math.min(100, (g.stars/scale)*100);
+    const groupStudents = cls.students.filter(s => s.groupId === g.id);
+
     html += `
       <div class="group-card" style="--gc:${g.color}">
         <button class="icon-btn gc-remove" data-remove-group="${g.id}" title="حذف المجموعة">✕</button>
@@ -511,13 +1044,13 @@ function renderClassDetail(cls){
           <div class="gc-badge">${g.icon}</div>
           <div class="gc-name-row">
             <input class="gc-name" data-field="name" data-group="${g.id}" value="${escapeAttr(g.name)}" maxlength="24">
-            <input class="gc-leader" data-field="leader" data-group="${g.id}" value="${escapeAttr(g.leader||'')}" placeholder="اسم القائدة (اختياري)" maxlength="24">
+            <input class="gc-leader" data-field="leader" data-group="${g.id}" value="${escapeAttr(g.leader||'')}" placeholder="اسم القائدة" maxlength="24">
           </div>
         </div>
 
         <div class="gc-stars">
           <button class="gc-star-btn minus" data-star-delta="-1" data-group="${g.id}">−</button>
-          <div class="gc-star-count"><b>⭐ ${g.stars}</b><span>نجمة مجمّعة</span></div>
+          <div class="gc-star-count"><b>⭐ ${g.stars}</b><span>نجوم المجموعة</span></div>
           <button class="gc-star-btn" data-star-delta="1" data-group="${g.id}">+</button>
         </div>
 
@@ -535,38 +1068,50 @@ function renderClassDetail(cls){
               </div>`).join('')}
           </div>
         </div>
+
+        <div class="gc-members-box">
+            <button class="btn btn-primary btn-sm" data-manage-group-members="${g.id}" style="padding:4px 10px;font-size:11.5px;">⚙️ </button>
+          <div class="gc-members-list">
+            ${groupStudents.length > 0 
+              ? groupStudents.map(st=>`
+                  <span class="member-tag">
+                    ${st.avatar || '👩‍🎓'} ${escapeHtml(st.name)}
+                    <button data-remove-from-group="${st.id}" title="إزالة من المجموعة">✕</button>
+                  </span>`).join('') 
+              : '<span style="color:#B7B2D6;font-size:11px;">لا توجد طالبات في هذه المجموعة بعد</span>'}
+          </div>
+        </div>
       </div>`;
   });
 
   html += `
-      <div class="add-group-card" id="addGroupBtn">
+      <div class="add-card" id="addGroupCardBtn">
         <div style="font-size:26px;">+</div>
         <div>إضافة مجموعة</div>
       </div>
-    </div>`;
+    `;
 
   return html;
 }
 
-/* ============ Wiring ============ */
 function wireHomeOrDetail(activeClass){
-  // Home
   const addClassBtn = document.getElementById('addClassBtn');
   if(addClassBtn) addClassBtn.onclick = openAddClassModal;
 
   document.querySelectorAll('[data-open-class]').forEach(el=>{
-    el.onclick = (e)=>{
+    el.onclick = ()=>{
       state.activeClassId = el.getAttribute('data-open-class');
       view = 'class';
       render();
     };
   });
+
   document.querySelectorAll('[data-remove-class]').forEach(el=>{
     el.onclick = (e)=>{
       e.stopPropagation();
       const id = el.getAttribute('data-remove-class');
       const c = state.classes.find(x=>x.id===id);
-      openConfirmModal(`حذف "${c.name}"؟`, 'سيتم حذف جميع مجموعاتها ونجومها نهائيًا.', ()=>{
+      openConfirmModal(`حذف "${c.name}"؟`, 'سيتم حذف جميع محتوياتها.', ()=>{
         state.classes = state.classes.filter(x=>x.id!==id);
         if(state.activeClassId===id){ state.activeClassId=null; view='home'; }
         saveState(); render();
@@ -575,16 +1120,22 @@ function wireHomeOrDetail(activeClass){
     };
   });
 
-  // Detail
+  if(!activeClass) return;
+
+  const goHome = ()=>{ view='home'; state.activeClassId=null; render(); };
+
   const backBtn = document.getElementById('backHomeBtn');
-  if(backBtn) backBtn.onclick = ()=>{ view='home'; state.activeClassId=null; render(); };
+  if(backBtn) backBtn.onclick = goHome;
+
+  const backBtnLabeled = document.getElementById('backHomeBtnLabeled');
+  if(backBtnLabeled) backBtnLabeled.onclick = goHome;
 
   const renameBtn = document.getElementById('renameClassBtn');
   if(renameBtn) renameBtn.onclick = ()=>openRenameClassModal(activeClass);
 
   const removeClassDetailBtn = document.getElementById('removeClassBtnDetail');
   if(removeClassDetailBtn) removeClassDetailBtn.onclick = ()=>{
-    openConfirmModal(`حذف "${activeClass.name}"؟`, 'سيتم حذف جميع مجموعاتها ونجومها نهائيًا.', ()=>{
+    openConfirmModal(`حذف "${activeClass.name}"؟`, 'نهائياً', ()=>{
       state.classes = state.classes.filter(x=>x.id!==activeClass.id);
       state.activeClassId = null; view='home';
       saveState(); render();
@@ -592,8 +1143,74 @@ function wireHomeOrDetail(activeClass){
     });
   };
 
+  const tabStudentsBtn = document.getElementById('tabStudentsBtn');
+  if(tabStudentsBtn) tabStudentsBtn.onclick = ()=>{ activeTab='students'; render(); };
+
+  const tabGroupsBtn = document.getElementById('tabGroupsBtn');
+  if(tabGroupsBtn) tabGroupsBtn.onclick = ()=>{ activeTab='groups'; render(); };
+
+  const openWheelBtn = document.getElementById('openWheelBtn');
+  if(openWheelBtn) openWheelBtn.onclick = ()=>openWheelModal(activeClass);
+
+  const openQuickPickBtn = document.getElementById('openQuickPickBtn');
+  if(openQuickPickBtn) openQuickPickBtn.onclick = ()=>openQuickPickModal(activeClass);
+
+  const openDevicePickBtn = document.getElementById('openDevicePickBtn');
+  if(openDevicePickBtn) openDevicePickBtn.onclick = ()=>openDevicePickModal(activeClass);
+
+  const toggleTopThreeBtn = document.getElementById('toggleTopThreeBtn');
+  if(toggleTopThreeBtn) toggleTopThreeBtn.onclick = ()=>{
+    hideTopThree = !hideTopThree;
+    render();
+  };
+
+  const addStudentBtn = document.getElementById('addStudentBtn');
+  if(addStudentBtn) addStudentBtn.onclick = ()=>openStudentModal(activeClass);
+
+  const gridAddStudentBtn = document.getElementById('gridAddStudentBtn');
+  if(gridAddStudentBtn) gridAddStudentBtn.onclick = ()=>openStudentModal(activeClass);
+
+  const bulkAddStudentBtn = document.getElementById('bulkAddStudentBtn');
+  if(bulkAddStudentBtn) bulkAddStudentBtn.onclick = ()=>openBulkAddStudentsModal(activeClass);
+
+  document.querySelectorAll('[data-edit-student]').forEach(el=>{
+    el.onclick = ()=>{
+      const stid = el.getAttribute('data-edit-student');
+      const st = activeClass.students.find(x=>x.id===stid);
+      if(st) openStudentModal(activeClass, st);
+    };
+  });
+
+  document.querySelectorAll('[data-st-delta]').forEach(el=>{
+    el.onclick = ()=>{
+      const stid = el.getAttribute('data-student');
+      const delta = parseInt(el.getAttribute('data-st-delta'), 10);
+      const st = activeClass.students.find(x=>x.id===stid);
+      if(st){
+        st.points = Math.max(0, (st.points||0) + delta);
+        saveState();
+        render();
+      }
+    };
+  });
+
+  document.querySelectorAll('[data-remove-student]').forEach(el=>{
+    el.onclick = ()=>{
+      const stid = el.getAttribute('data-remove-student');
+      const st = activeClass.students.find(x=>x.id===stid);
+      openConfirmModal(`حذف الطالبة "${st.name}"؟`, '', ()=>{
+        activeClass.students = activeClass.students.filter(x=>x.id!==stid);
+        saveState(); render();
+        showToast('تم حذف الطالبة');
+      });
+    };
+  });
+
   const addGroupBtn = document.getElementById('addGroupBtn');
   if(addGroupBtn) addGroupBtn.onclick = ()=>openAddGroupModal(activeClass);
+
+  const addGroupCardBtn = document.getElementById('addGroupCardBtn');
+  if(addGroupCardBtn) addGroupCardBtn.onclick = ()=>openAddGroupModal(activeClass);
 
   const quickAddBtn = document.getElementById('quickAddBtn');
   if(quickAddBtn) quickAddBtn.onclick = ()=>{
@@ -601,15 +1218,38 @@ function wireHomeOrDetail(activeClass){
       activeClass.groups.push({id:uid(), name:p.name, leader:'', icon:p.icon, color:p.color, stars:0});
     });
     saveState(); render();
-    showToast('تمت إضافة المجموعات الثماني');
+    showToast('تمت إضافة المجموعات الثماني الجاهزة');
   };
+
+  document.querySelectorAll('[data-manage-group-members]').forEach(el=>{
+    el.onclick = ()=>{
+      const gid = el.getAttribute('data-manage-group-members');
+      const group = activeClass.groups.find(g=>g.id===gid);
+      if(group) openManageGroupMembersModal(activeClass, group);
+    };
+  });
+
+  document.querySelectorAll('[data-remove-from-group]').forEach(el=>{
+    el.onclick = (e)=>{
+      e.stopPropagation();
+      const stid = el.getAttribute('data-remove-from-group');
+      const st = activeClass.students.find(s=>s.id===stid);
+      if(st){
+        st.groupId = '';
+        saveState();
+        render();
+        showToast('تمت إزالة الطالبة من المجموعة');
+      }
+    };
+  });
 
   document.querySelectorAll('[data-remove-group]').forEach(el=>{
     el.onclick = ()=>{
       const gid = el.getAttribute('data-remove-group');
       const g = activeClass.groups.find(x=>x.id===gid);
-      openConfirmModal(`حذف مجموعة "${g.name}"؟`, 'سيتم فقدان نجومها المجمّعة.', ()=>{
+      openConfirmModal(`حذف مجموعة "${g.name}"؟`, '', ()=>{
         activeClass.groups = activeClass.groups.filter(x=>x.id!==gid);
+        activeClass.students.forEach(s => { if(s.groupId === gid) s.groupId = ''; });
         saveState(); render();
         showToast('تم حذف المجموعة');
       });
@@ -632,17 +1272,171 @@ function wireHomeOrDetail(activeClass){
       const gid = el.getAttribute('data-group');
       const field = el.getAttribute('data-field');
       const g = activeClass.groups.find(x=>x.id===gid);
-      g[field] = el.value;
+      if(g) g[field] = el.value;
     };
     el.onblur = ()=>{ saveState(); };
   });
+
 }
 
-/* ============ Modals ============ */
 function closeModal(){
   const ov = document.getElementById('modalOverlay');
   if(ov) ov.remove();
   pendingModal = null;
+}
+
+function openManageGroupMembersModal(cls, group){
+  const currentGroupStudents = cls.students.filter(s => s.groupId === group.id);
+
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" style="max-width:560px;">
+          <h3>إدارة عضوات مجموعة: ${escapeHtml(group.name)}</h3>
+          <p class="sub">إضافة الطالبات دفعة واحدة عبر خانات الاختيار (Checkboxes) أو إزالتهن بزر الحذف[cite: 8]</p>
+          
+          <div style="font-weight:700;margin-bottom:8px;font-size:13.5px;color:var(--ink);">العضوات الحالي بالمجموعة (${currentGroupStudents.length}):</div>
+          <div style="max-height:150px;overflow-y:auto;background:#F9F8FF;padding:10px;border-radius:12px;border:1px solid var(--line);margin-bottom:16px;">
+            ${currentGroupStudents.length === 0 ? '<div style="color:var(--ink-soft);font-size:12px;">لا توجد عضوات حالياً</div>' : currentGroupStudents.map(st=>`
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-bottom:1px solid var(--line);">
+                <span>${st.avatar || '👩‍🎓'} ${escapeHtml(st.name)}</span>
+                <button class="btn btn-danger btn-sm" data-remove-from-grp-modal="${st.id}" style="padding:2px 8px;font-size:11px;">إزالة ✕</button>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="font-weight:700;margin-bottom:8px;font-size:13.5px;color:var(--ink);">إضافة طالبات جديدات:</div>
+          <div style="max-height:180px;overflow-y:auto;background:#FFF;padding:10px;border-radius:12px;border:1.5px solid var(--line);margin-bottom:16px;" id="checkboxesContainer">
+            ${cls.students.length === 0 ? '<div style="color:var(--ink-soft);font-size:12px;">لا توجد طالبات في الفصل</div>' : cls.students.map(st=>`
+              <label style="display:flex;align-items:center;gap:8px;padding:6px;border-bottom:1px solid var(--line);cursor:pointer;">
+                <input type="checkbox" class="st-checkbox" value="${st.id}" ${st.groupId === group.id ? 'checked disabled' : ''}>
+                <span>${st.avatar || '👩‍🎓'} ${escapeHtml(st.name)} ${st.groupId && st.groupId !== group.id ? '(موزعة لمجموعة أخرى)' : ''}</span>
+              </label>
+            `).join('')}
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn btn-soft" id="cancelModal">إغلاق</button>
+            <button class="btn btn-primary" id="confirmAddCheckedMembers">إضافة المحددات دفعة واحدة ✅</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      document.getElementById('cancelModal').onclick = closeModal;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
+
+      document.querySelectorAll('[data-remove-from-grp-modal]').forEach(btn => {
+        btn.onclick = ()=>{
+          const stid = btn.getAttribute('data-remove-from-grp-modal');
+          const st = cls.students.find(s => s.id === stid);
+          if(st){
+            st.groupId = '';
+            saveState();
+            closeModal();
+            openManageGroupMembersModal(cls, group);
+            render();
+            showToast('تمت إزالة الطالبة من المجموعة');
+          }
+        };
+      });
+
+      document.getElementById('confirmAddCheckedMembers').onclick = ()=>{
+        const checkboxes = document.querySelectorAll('.st-checkbox:checked:not(:disabled)');
+        let addedCount = 0;
+        checkboxes.forEach(cb => {
+          const stid = cb.value;
+          const st = cls.students.find(s => s.id === stid);
+          if(st){
+            st.groupId = group.id;
+            addedCount++;
+          }
+        });
+        saveState();
+        closeModal();
+        render();
+        showToast(`تمت إضافة ${addedCount} طالبة للمجموعة بنجاح!`);
+      };
+    }
+  };
+  render();
+}
+
+function openBulkAddStudentsModal(cls){
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" style="max-width:560px;">
+          <h3>📋 إضافة قائمة طالبات</h3>
+          <p class="sub">الصقي أسماء الطالبات (اسم في كل سطر)</p>
+          <div id="bulkStep1">
+            <div class="field">
+              <label>الأسماء:</label>
+              <textarea id="bulkPasteText" rows="6" placeholder="سارة&#10;نورة"></textarea>
+            </div>
+            <div class="modal-actions">
+              <button class="btn btn-soft" id="cancelModal">إلغاء</button>
+              <button class="btn btn-primary" id="btnToStep2">معاينة ←</button>
+            </div>
+          </div>
+          <div id="bulkStep2" style="display:none;">
+            <div id="bulkEditableList" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:14px;"></div>
+            <div class="modal-actions">
+              <button class="btn btn-soft" id="btnBackToStep1">رجوع</button>
+              <button class="btn btn-primary" id="confirmSaveBulk">حفظ الكل ✅</button>
+            </div>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      const overlay = document.getElementById('modalOverlay');
+      document.getElementById('cancelModal').onclick = closeModal;
+      overlay.onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
+
+      const step1 = document.getElementById('bulkStep1');
+      const step2 = document.getElementById('bulkStep2');
+      const listContainer = document.getElementById('bulkEditableList');
+
+      document.getElementById('btnToStep2').onclick = ()=>{
+        const raw = document.getElementById('bulkPasteText').value;
+        const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+        if(lines.length === 0){ showToast('⚠️ أدخِلي أسماء أولاً'); return; }
+
+        listContainer.innerHTML = lines.map((name, idx)=>`
+          <div class="bulk-row" style="display:flex;gap:8px;align-items:center;background:#F8F6FF;padding:8px;border-radius:10px;">
+            <input type="text" class="bulk-st-name" value="${escapeAttr(name)}" style="flex:2;padding:6px;border-radius:8px;border:1px solid var(--line);">
+            <input type="text" class="bulk-st-device" placeholder="الجهاز" style="flex:1;padding:6px;border-radius:8px;border:1px solid var(--line);">
+            <select class="bulk-st-group" style="flex:1.5;padding:6px;border-radius:8px;border:1px solid var(--line);">
+              <option value="">بدون مجموعة</option>
+              ${cls.groups.map(g=>`<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('')}
+            </select>
+          </div>
+        `).join('');
+        step1.style.display = 'none';
+        step2.style.display = 'block';
+      };
+
+      document.getElementById('btnBackToStep1').onclick = ()=>{
+        step2.style.display = 'none'; step1.style.display = 'block';
+      };
+
+      document.getElementById('confirmSaveBulk').onclick = ()=>{
+        const rows = listContainer.querySelectorAll('.bulk-row');
+        let added = 0;
+        rows.forEach((row, idx)=>{
+          const name = row.querySelector('.bulk-st-name').value.trim();
+          const deviceNum = row.querySelector('.bulk-st-device').value.trim();
+          const groupId = row.querySelector('.bulk-st-group').value;
+          if(name){
+            cls.students.push({ id:uid(), name, deviceNum, groupId, avatar:STUDENT_AVATARS[idx%STUDENT_AVATARS.length], points:0 });
+            added++;
+          }
+        });
+        closeModal(); saveState(); render();
+        showToast(`تمت إضافة ${added} طالبة`);
+      };
+    }
+  };
+  render();
 }
 
 function openAddClassModal(){
@@ -651,7 +1445,6 @@ function openAddClassModal(){
       <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
           <h3>إضافة شعبة جديدة</h3>
-          <p class="sub">أدخلي اسم الشعبة، مثل: الصف الرابع - أ</p>
           <div class="field">
             <label>اسم الشعبة</label>
             <input type="text" id="newClassName" placeholder="مثال: 4/1">
@@ -669,17 +1462,88 @@ function openAddClassModal(){
       input.focus();
       const submit = ()=>{
         const name = input.value.trim();
-        if(!name){ input.focus(); return; }
-        const newClass = {id:uid(), name, groups:[]};
+        if(!name) return;
+        const newClass = {id:uid(), name, groups:[], students:[]};
         state.classes.push(newClass);
         state.activeClassId = newClass.id;
         view = 'class';
-        closeModal();
-        saveState(); render();
-        showToast('تمت إضافة الشعبة');
+        closeModal(); saveState(); render();
       };
       document.getElementById('confirmAddClass').onclick = submit;
       input.onkeydown = (e)=>{ if(e.key==='Enter') submit(); };
+    }
+  };
+  render();
+}
+
+function openStudentModal(cls, editStudent = null){
+  let selectedAvatar = editStudent ? (editStudent.avatar || STUDENT_AVATARS[0]) : STUDENT_AVATARS[0];
+
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+          <h3>${editStudent ? 'تعديل طالبة' : 'إضافة طالبة'}</h3>
+          <div class="field">
+            <label>اسم الطالبة</label>
+            <input type="text" id="stName" value="${editStudent ? escapeAttr(editStudent.name) : ''}">
+          </div>
+          <div class="field">
+            <label>رقم الجهاز</label>
+            <input type="text" id="stDevice" value="${editStudent ? escapeAttr(editStudent.deviceNum || '') : ''}">
+          </div>
+          <div class="field">
+            <label>المجموعة</label>
+            <select id="stGroup">
+              <option value="">-- بدون --</option>
+              ${cls.groups.map(g => `<option value="${g.id}" ${editStudent && editStudent.groupId === g.id ? 'selected' : ''}>${escapeHtml(g.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>الرمز</label>
+            <div class="swatches" id="avatarSwatches">
+              ${STUDENT_AVATARS.map(av => `<button type="button" class="swatch ${av===selectedAvatar?'selected':''}" data-avatar="${av}">${av}</button>`).join('')}
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button class="btn btn-soft" id="cancelModal">إلغاء</button>
+            <button class="btn btn-primary" id="confirmSaveStudent">حفظ</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      document.getElementById('cancelModal').onclick = closeModal;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
+
+      document.querySelectorAll('#avatarSwatches .swatch').forEach(el=>{
+        el.onclick = ()=>{
+          selectedAvatar = el.getAttribute('data-avatar');
+          document.querySelectorAll('#avatarSwatches .swatch').forEach(s=>s.classList.remove('selected'));
+          el.classList.add('selected');
+        };
+      });
+
+      const nameInput = document.getElementById('stName');
+      nameInput.focus();
+
+      const submit = ()=>{
+        const name = nameInput.value.trim();
+        if(!name) return;
+        const deviceNum = document.getElementById('stDevice').value.trim();
+        const groupId = document.getElementById('stGroup').value;
+
+        if(editStudent){
+          editStudent.name = name;
+          editStudent.deviceNum = deviceNum;
+          editStudent.groupId = groupId;
+          editStudent.avatar = selectedAvatar;
+        } else {
+          cls.students.push({ id: uid(), name, deviceNum, groupId, avatar: selectedAvatar, points: 0 });
+        }
+
+        closeModal(); saveState(); render();
+      };
+      document.getElementById('confirmSaveStudent').onclick = submit;
     }
   };
   render();
@@ -690,9 +1554,8 @@ function openRenameClassModal(cls){
     html: `
       <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
-          <h3>إعادة تسمية الشعبة</h3>
+          <h3>تعديل اسم الشعبة</h3>
           <div class="field">
-            <label>اسم الشعبة</label>
             <input type="text" id="renameClassName" value="${escapeAttr(cls.name)}">
           </div>
           <div class="modal-actions">
@@ -705,7 +1568,7 @@ function openRenameClassModal(cls){
       document.getElementById('cancelModal').onclick = closeModal;
       document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
       const input = document.getElementById('renameClassName');
-      input.focus(); input.select();
+      input.focus();
       const submit = ()=>{
         const name = input.value.trim();
         if(!name) return;
@@ -713,7 +1576,6 @@ function openRenameClassModal(cls){
         closeModal(); saveState(); render();
       };
       document.getElementById('confirmRenameClass').onclick = submit;
-      input.onkeydown = (e)=>{ if(e.key==='Enter') submit(); };
     }
   };
   render();
@@ -728,14 +1590,13 @@ function openAddGroupModal(cls){
       <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
           <h3>إضافة مجموعة</h3>
-          <p class="sub">اختاري اسمًا ورمزًا ولونًا مميزًا للمجموعة</p>
           <div class="field">
-            <label>اسم المجموعة</label>
-            <input type="text" id="newGroupName" placeholder="مثال: العبقريات">
+            <label>الاسم</label>
+            <input type="text" id="newGroupName" placeholder="اسم المجموعة">
           </div>
           <div class="field">
-            <label>اسم القائدة (اختياري)</label>
-            <input type="text" id="newGroupLeader" placeholder="مثال: سارة">
+            <label>القائدة</label>
+            <input type="text" id="newGroupLeader" placeholder="اسم القائدة">
           </div>
           <div class="field">
             <label>الرمز</label>
@@ -776,11 +1637,10 @@ function openAddGroupModal(cls){
       nameInput.focus();
       const submit = ()=>{
         const name = nameInput.value.trim();
-        if(!name){ nameInput.focus(); return; }
+        if(!name) return;
         const leader = document.getElementById('newGroupLeader').value.trim();
         cls.groups.push({id:uid(), name, leader, icon:selectedIcon, color:selectedColor, stars:0});
         closeModal(); saveState(); render();
-        showToast('تمت إضافة المجموعة');
       };
       document.getElementById('confirmAddGroup').onclick = submit;
     }
@@ -797,7 +1657,7 @@ function openConfirmModal(title, sub, onConfirm){
           <p class="sub">${sub}</p>
           <div class="modal-actions">
             <button class="btn btn-soft" id="cancelModal">إلغاء</button>
-            <button class="btn btn-danger" id="confirmDanger">حذف</button>
+            <button class="btn btn-danger" id="confirmDanger">تأكيد</button>
           </div>
         </div>
       </div>`,
@@ -810,7 +1670,313 @@ function openConfirmModal(title, sub, onConfirm){
   render();
 }
 
-/* ============ Utils ============ */
+function openWheelModal(cls){
+  if(!cls.students || cls.students.length === 0){
+    showToast('⚠️ لا توجد طالبات');
+    return;
+  }
+  let isSpinning = false;
+  let currentAngle = 0;
+
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" style="max-width:480px;text-align:center;">
+          <h3>🎡 العجلة الدوارة</h3>
+          <div class="field" style="text-align:right;">
+            <select id="wheelGroupFilter">
+              <option value="all">جميع الطالبات (${cls.students.length})</option>
+              ${cls.groups.map(g => `<option value="${g.id}">مجموعة: ${escapeHtml(g.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="wheel-container">
+            <div class="wheel-pointer"></div>
+            <canvas id="wheelCanvas" width="300" height="300"></canvas>
+          </div>
+          <div id="winnerContainer"></div>
+          <div class="modal-actions" style="justify-content:center;margin-top:20px;">
+            <button class="btn btn-soft" id="closeWheelBtn">إغلاق</button>
+            <button class="btn btn-primary" id="spinWheelBtn">أدر العجلة 🚀</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      const handleClose = ()=>{ closeModal(); render(); };
+      document.getElementById('closeWheelBtn').onclick = handleClose;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay' && !isSpinning) handleClose(); };
+      
+      const canvas = document.getElementById('wheelCanvas');
+      const ctx = canvas.getContext('2d');
+      const groupSelect = document.getElementById('wheelGroupFilter');
+
+      function getFilteredStudents(){
+        const val = groupSelect.value;
+        if(val === 'all') return cls.students;
+        return cls.students.filter(s => s.groupId === val);
+      }
+
+      let currentStudents = getFilteredStudents();
+
+      function drawWheel(){
+        ctx.clearRect(0, 0, 300, 300);
+        const total = currentStudents.length;
+        if(total === 0) return;
+        const arc = (2 * Math.PI) / total;
+        const radius = 145, cx = 150, cy = 150;
+        const colors = ['#8C7AE6', '#F080A0', '#3FBFBF', '#A78BFA', '#F5934D', '#6FBF73', '#F0C136', '#5B9EE1', '#E4674F', '#5CC29E'];
+
+        for(let i = 0; i < total; i++){
+          const angle = currentAngle + i * arc;
+          ctx.beginPath();
+          ctx.fillStyle = colors[i % colors.length];
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, radius, angle, angle + arc);
+          ctx.lineTo(cx, cy);
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate(angle + arc / 2);
+          ctx.textAlign = "right";
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "bold 13px Tajawal, sans-serif";
+          ctx.fillText(currentStudents[i].name.slice(0, 14), radius - 15, 4);
+          ctx.restore();
+        }
+      }
+
+      groupSelect.onchange = ()=>{
+        currentStudents = getFilteredStudents();
+        currentAngle = 0;
+        document.getElementById('winnerContainer').innerHTML = '';
+        drawWheel();
+      };
+      drawWheel();
+
+      document.getElementById('spinWheelBtn').onclick = ()=>{
+        if(isSpinning) return;
+        currentStudents = getFilteredStudents();
+        if(currentStudents.length === 0) return;
+        isSpinning = true; groupSelect.disabled = true;
+        document.getElementById('winnerContainer').innerHTML = '';
+        
+        const spinRounds = 5 + Math.random() * 5;
+        const targetAngle = currentAngle + spinRounds * 2 * Math.PI + Math.random() * 2 * Math.PI;
+        const duration = 3800;
+        const start = performance.now();
+        const startAngle = currentAngle;
+
+        function animate(now){
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          currentAngle = startAngle + (targetAngle - startAngle) * easeOut;
+          drawWheel();
+
+          if(progress < 1){
+            requestAnimationFrame(animate);
+          } else {
+            isSpinning = false; groupSelect.disabled = false;
+            const total = currentStudents.length;
+            const arc = (2 * Math.PI) / total;
+            const normalizedAngle = (2 * Math.PI - (currentAngle % (2 * Math.PI))) % (2 * Math.PI);
+            const topAngle = (normalizedAngle + 1.5 * Math.PI) % (2 * Math.PI);
+            const winnerIndex = Math.floor(topAngle / arc) % total;
+            const winner = currentStudents[winnerIndex];
+
+            document.getElementById('winnerContainer').innerHTML = `
+              <div class="winner-box">
+                <div style="font-size:38px;">${winner.avatar || '🎉'}</div>
+                <h3 style="margin:6px 0 2px;">مبروك: ${escapeHtml(winner.name)} ✨</h3>
+                <button class="btn btn-primary btn-sm" id="awardWinnerBtn" style="margin-top:10px;">+ منح نقطة ⭐</button>
+              </div>`;
+            
+            document.getElementById('awardWinnerBtn').onclick = (e)=>{
+              winner.points = (winner.points || 0) + 1;
+              saveState();
+              showToast(`تم إضافة نقطة لـ ${winner.name}`);
+              e.target.textContent = `+ منح نقطة أخرى (النقاط: ${winner.points})`;
+            };
+          }
+        }
+        requestAnimationFrame(animate);
+      };
+    }
+  };
+  render();
+}
+
+function openQuickPickModal(cls){
+  if(!cls.students || cls.students.length === 0){ showToast('⚠️ لا توجد طالبات'); return; }
+
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" style="text-align:center;max-width:400px;">
+          <h3>🎲 اختيار عشوائي سريع</h3>
+          <div class="field" style="text-align:right;">
+            <select id="quickGroupFilter">
+              <option value="all">جميع الطالبات (${cls.students.length})</option>
+              ${cls.groups.map(g => `<option value="${g.id}">مجموعة: ${escapeHtml(g.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div id="quickPickBox" style="padding:24px 10px;background:#F6F4FF;border-radius:18px;margin:16px 0;">
+            <div id="quickPickAvatar" style="font-size:54px;margin-bottom:8px;">❓</div>
+            <div id="quickPickName" style="font-size:20px;font-weight:800;">اضغط سحب للبدء</div>
+          </div>
+          <div class="modal-actions" style="justify-content:center;">
+            <button class="btn btn-soft" id="closeQuickPickBtn">إغلاق</button>
+            <button class="btn btn-primary" id="rePickBtn">سحب عشوائي 🔄</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      const handleClose = ()=>{ closeModal(); render(); };
+      document.getElementById('closeQuickPickBtn').onclick = handleClose;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay' && !isSpinning) handleClose(); };
+
+      const groupSelect = document.getElementById('quickGroupFilter');
+      let timer = null;
+
+      function getFilteredStudents(){
+        const val = groupSelect.value;
+        if(val === 'all') return cls.students;
+        return cls.students.filter(s => s.groupId === val);
+      }
+
+      function doPick(){
+        const pool = getFilteredStudents();
+        if(pool.length === 0){ showToast('⚠️ لا توجد طالبات'); return; }
+
+        let count = 0;
+        const maxSteps = 15;
+        const box = document.getElementById('quickPickBox');
+        groupSelect.disabled = true;
+
+        clearInterval(timer);
+        timer = setInterval(()=>{
+          const rand = pool[Math.floor(Math.random() * pool.length)];
+          document.getElementById('quickPickAvatar').textContent = rand.avatar || '👩‍🎓';
+          document.getElementById('quickPickName').textContent = rand.name;
+          count++;
+
+          if(count >= maxSteps){
+            clearInterval(timer);
+            groupSelect.disabled = false;
+            const winner = pool[Math.floor(Math.random() * pool.length)];
+            
+            box.innerHTML = `
+              <div style="font-size:54px;margin-bottom:8px;">${winner.avatar || '🌟'}</div>
+              <div style="font-size:22px;font-weight:800;">${escapeHtml(winner.name)}</div>
+              <button class="btn btn-primary btn-sm" id="awardQuickWinnerBtn" style="margin-top:14px;">+ منح نقطة ⭐</button>
+            `;
+
+            document.getElementById('awardQuickWinnerBtn').onclick = (e)=>{
+              winner.points = (winner.points || 0) + 1;
+              saveState();
+              showToast(`تم إضافة نقطة لـ ${winner.name}`);
+              e.target.textContent = `+ منح نقطة أخرى (النقاط: ${winner.points})`;
+            };
+          }
+        }, 80);
+      }
+      document.getElementById('rePickBtn').onclick = doPick;
+    }
+  };
+  render();
+}
+
+function openDevicePickModal(cls){
+  const eligible = (cls.students || []).filter(s => (s.deviceNum || '').toString().trim() !== '');
+  if(eligible.length === 0){ showToast('⚠️ لا توجد طالبات لديهنّ رقم جهاز مُسجَّل'); return; }
+
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" style="text-align:center;max-width:400px;">
+          <h3>💻 اختيار عشوائي برقم الجهاز</h3>
+          <p class="sub" style="text-align:center;">يتم السحب فقط بين الطالبات اللواتي لديهنّ رقم جهاز مُسجَّل</p>
+          <div class="field" style="text-align:right;">
+            <select id="deviceGroupFilter">
+              <option value="all">جميع الطالبات (${eligible.length})</option>
+              ${cls.groups.map(g => `<option value="${g.id}">مجموعة: ${escapeHtml(g.name)}</option>`).join('')}
+            </select>
+          </div>
+          <div id="devicePickBox" style="padding:24px 10px;background:#F6F4FF;border-radius:18px;margin:16px 0;">
+            <div id="deviceNumBadge" style="font-size:15px;font-weight:800;color:#7C63C9;margin-bottom:6px;">🖥️ رقم الجهاز: —</div>
+            <div id="devicePickAvatar" style="font-size:54px;margin-bottom:8px;">❓</div>
+            <div id="devicePickName" style="font-size:20px;font-weight:800;">اضغط سحب للبدء</div>
+          </div>
+          <div class="modal-actions" style="justify-content:center;">
+            <button class="btn btn-soft" id="closeDevicePickBtn">إغلاق</button>
+            <button class="btn btn-primary" id="reDevicePickBtn">سحب عشوائي 🔄</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      let isPicking = false;
+      const handleClose = ()=>{ closeModal(); render(); };
+      document.getElementById('closeDevicePickBtn').onclick = handleClose;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay' && !isPicking) handleClose(); };
+
+      const groupSelect = document.getElementById('deviceGroupFilter');
+      let timer = null;
+
+      function getFilteredStudents(){
+        const val = groupSelect.value;
+        const pool = val === 'all' ? eligible : eligible.filter(s => s.groupId === val);
+        return pool;
+      }
+
+      function doPick(){
+        const pool = getFilteredStudents();
+        if(pool.length === 0){ showToast('⚠️ لا توجد طالبات لديهنّ رقم جهاز في هذه المجموعة'); return; }
+
+        let count = 0;
+        const maxSteps = 15;
+        const box = document.getElementById('devicePickBox');
+        groupSelect.disabled = true;
+        isPicking = true;
+
+        clearInterval(timer);
+        timer = setInterval(()=>{
+          const rand = pool[Math.floor(Math.random() * pool.length)];
+          document.getElementById('deviceNumBadge').textContent = `🖥️ رقم الجهاز: ${escapeHtml(rand.deviceNum)}`;
+          document.getElementById('devicePickAvatar').textContent = rand.avatar || '👩‍🎓';
+          document.getElementById('devicePickName').textContent = rand.name;
+          count++;
+
+          if(count >= maxSteps){
+            clearInterval(timer);
+            groupSelect.disabled = false;
+            isPicking = false;
+            const winner = pool[Math.floor(Math.random() * pool.length)];
+
+            box.innerHTML = `
+              <div style="font-size:16px;font-weight:900;color:#D98F1E;margin-bottom:8px;">🖥️ رقم الجهاز: ${escapeHtml(winner.deviceNum)}</div>
+              <div style="font-size:54px;margin-bottom:8px;">${winner.avatar || '🌟'}</div>
+              <div style="font-size:22px;font-weight:800;">${escapeHtml(winner.name)}</div>
+              <button class="btn btn-primary btn-sm" id="awardDeviceWinnerBtn" style="margin-top:14px;">+ منح نقطة ⭐</button>
+            `;
+
+            document.getElementById('awardDeviceWinnerBtn').onclick = (e)=>{
+              winner.points = (winner.points || 0) + 1;
+              saveState();
+              showToast(`تم إضافة نقطة لـ ${winner.name}`);
+              e.target.textContent = `+ منح نقطة أخرى (النقاط: ${winner.points})`;
+            };
+          }
+        }, 80);
+      }
+      document.getElementById('reDevicePickBtn').onclick = doPick;
+    }
+  };
+  render();
+}
+
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
