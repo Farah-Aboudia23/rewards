@@ -323,19 +323,6 @@ input,textarea,select{font-family:inherit;}
   gap:12px;
 }
 
-@media (max-width: 1100px) {
-  .students-grid { grid-template-columns: repeat(4, 1fr); }
-}
-@media (max-width: 880px) {
-  .students-grid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 640px) {
-  .students-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 420px) {
-  .students-grid { grid-template-columns: 1fr; }
-}
-
 .student-card{
   background:var(--panel);
   border-radius:var(--radius);
@@ -347,6 +334,7 @@ input,textarea,select{font-family:inherit;}
   flex-direction:column;
   align-items:center;
   transition:.15s transform ease;
+  height:200px;
 }
 .student-card:hover{transform:translateY(-3px);}
 
@@ -381,20 +369,47 @@ input,textarea,select{font-family:inherit;}
   margin:0;
 }
 
+.student-card .student-top-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  width:100%;
+  min-height:32px;
+  margin-top:4px;
+  margin-bottom:10px;
+  padding-inline:52px 4px;
+}
+
 .student-card .student-name{
   font-family:'Cairo',sans-serif;
   font-weight:800;
-  font-size:16.5px;
+  font-size:15.5px;
   color:var(--ink);
-  margin-top:4px;
-  margin-bottom:10px;
   text-align:center;
-  width:100%;
-  padding-inline:52px 4px;
+  flex:1;
+  min-width:0;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
 }
+
+.student-card .st-edit-icon{
+  flex-shrink:0;
+  width:26px;
+  height:26px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:#F9F8FF;
+  color:var(--ink-soft);
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:0;
+}
+.student-card .st-edit-icon:hover{color:#7c63c9;border-color:#C9BFF5;}
 
 .student-card .student-info-badge{
   display:inline-flex;
@@ -475,24 +490,6 @@ input,textarea,select{font-family:inherit;}
   flex-shrink:0;
 }
 .student-card .st-btn-minus:active{transform:scale(.92);}
-
-.student-card .st-edit{
-  width:100%;
-  margin-top:14px;
-  background:#F9F8FF;
-  border:1px solid var(--line);
-  color:var(--ink-soft);
-  font-size:12px;
-  font-weight:700;
-  cursor:pointer;
-  padding:6px 8px;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-}
-.student-card .st-edit:hover{color:#7c63c9;border-color:#C9BFF5;}
 
 /* ===== Groups grid ===== */
 .groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;}
@@ -988,7 +985,10 @@ function renderStudentsTab(cls){
       <div class="student-card">
         <button class="st-remove" data-remove-student="${st.id}" title="حذف">X</button>
         <div class="student-avatar">${st.avatar || '👩‍🎓'}</div>
-        <div class="student-name">${escapeHtml(st.name)}</div>
+        <div class="student-top-row">
+          <div class="student-name" title="${escapeAttr(st.name)}">${escapeHtml(firstTwoNames(st.name))}</div>
+          <button class="st-edit-icon" data-edit-student="${st.id}" title="تعديل">✏️</button>
+        </div>
         <div class="student-info-badge">💻 جهاز: ${st.deviceNum ? escapeHtml(st.deviceNum) : '-'}</div>
         <div class="student-stats-row">
           <button class="st-btn-plus" data-st-delta="1" data-student="${st.id}">+</button>
@@ -998,7 +998,6 @@ function renderStudentsTab(cls){
           </div>
           <button class="st-btn-minus" data-st-delta="-1" data-student="${st.id}">-</button>
         </div>
-        <button class="st-edit" data-edit-student="${st.id}">✏️ تعديل</button>
       </div>`;
   });
 
@@ -1975,6 +1974,12 @@ function openDevicePickModal(cls){
     }
   };
   render();
+}
+
+function firstTwoNames(fullName){
+  if(!fullName) return '';
+  const parts = String(fullName).trim().split(/\s+/);
+  return parts.slice(0, 2).join(' ');
 }
 
 function escapeHtml(s){
