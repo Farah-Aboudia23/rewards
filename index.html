@@ -1093,6 +1093,7 @@ function renderStudentsTab(cls){
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn btn-primary" id="addStudentBtn">+ إضافة طالبة فردية</button>
         <button class="btn btn-soft" id="bulkAddStudentBtn">📋 إضافة جماعية</button>
+        <button class="btn btn-accent" id="addStarAllBtn">⭐ إضافة نجمة لجميع الطالبات</button>
       </div>
       <button class="btn btn-soft btn-sm" id="toggleTopThreeBtn">
         ${hideTopThree ? '👁️ إظهار المراكز الثلاثة الأولى' : '🙈 إخفاء المراكز الثلاثة الأولى'}
@@ -1411,6 +1412,15 @@ function wireHomeOrDetail(activeClass){
 
   const bulkAddStudentBtn = document.getElementById('bulkAddStudentBtn');
   if(bulkAddStudentBtn) bulkAddStudentBtn.onclick = ()=>openBulkAddStudentsModal(activeClass);
+
+  const addStarAllBtn = document.getElementById('addStarAllBtn');
+  if(addStarAllBtn) addStarAllBtn.onclick = ()=>{
+    if(!activeClass.students || activeClass.students.length === 0){
+      showToast('⚠️ لا توجد طالبات في هذه الشعبة');
+      return;
+    }
+    openAddStarAllModal(activeClass);
+  };
 
   document.querySelectorAll('[data-edit-student]').forEach(el=>{
     el.onclick = ()=>{
@@ -1885,6 +1895,67 @@ function openAddGroupModal(cls){
         closeModal(); saveState(); render();
       };
       document.getElementById('confirmAddGroup').onclick = submit;
+    }
+  };
+  render();
+}
+
+function openAddStarAllModal(cls){
+  pendingModal = {
+    html: `
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" style="max-width:520px;">
+          <h3>⭐ إضافة نجمة لجميع الطالبات</h3>
+          <p class="sub">حدّدي الطالبات الغائبات أدناه، ولن تتم إضافة نجمة لهن. ستحصل باقي الطالبات على نجمة واحدة تلقائيًا.</p>
+
+          <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+            <button class="btn btn-soft btn-sm" id="selectAllAbsentBtn">تحديد الكل كغائبات</button>
+            <button class="btn btn-soft btn-sm" id="clearAllAbsentBtn" style="margin-inline-start:8px;">إلغاء التحديد</button>
+          </div>
+
+          <div style="max-height:300px;overflow-y:auto;background:#FFF;padding:10px;border-radius:12px;border:1.5px solid var(--line);margin-bottom:16px;" id="absentCheckboxesContainer">
+            ${cls.students.map(st=>`
+              <label style="display:flex;align-items:center;gap:8px;padding:6px;border-bottom:1px solid var(--line);cursor:pointer;">
+                <input type="checkbox" class="absent-checkbox" value="${st.id}">
+                <span style="flex:1;">${st.avatar || '👩‍🎓'} ${escapeHtml(st.name)}</span>
+                <span style="color:var(--danger);font-size:11px;font-weight:700;">غائبة</span>
+              </label>
+            `).join('')}
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn btn-soft" id="cancelModal">إلغاء</button>
+            <button class="btn btn-primary" id="confirmAddStarAll">⭐ إضافة النجمة للحاضرات</button>
+          </div>
+        </div>
+      </div>`,
+    wire: ()=>{
+      document.getElementById('cancelModal').onclick = closeModal;
+      document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') closeModal(); };
+
+      document.getElementById('selectAllAbsentBtn').onclick = ()=>{
+        document.querySelectorAll('.absent-checkbox').forEach(cb=>{ cb.checked = true; });
+      };
+      document.getElementById('clearAllAbsentBtn').onclick = ()=>{
+        document.querySelectorAll('.absent-checkbox').forEach(cb=>{ cb.checked = false; });
+      };
+
+      document.getElementById('confirmAddStarAll').onclick = ()=>{
+        const absentIds = new Set(Array.from(document.querySelectorAll('.absent-checkbox:checked')).map(cb=>cb.value));
+        let addedCount = 0;
+        cls.students.forEach(st=>{
+          if(!absentIds.has(st.id)){
+            st.points = (st.points||0) + 1;
+            addedCount++;
+          }
+        });
+        saveState();
+        closeModal();
+        render();
+        if(addedCount > 0) playApplause();
+        const absentMsg = absentIds.size > 0 ? ` (تم استبعاد ${absentIds.size} غائبة)` : '';
+        showToast(`تمت إضافة نجمة لـ ${addedCount} طالبة${absentMsg} ⭐`);
+      };
     }
   };
   render();
