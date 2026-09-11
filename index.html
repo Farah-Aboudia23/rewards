@@ -1310,7 +1310,6 @@ function renderGroupsTab(cls){
               ? groupStudents.map(st=>`
                   <span class="member-tag">
                     ${st.avatar || '👩‍🎓'} ${escapeHtml(st.name)}
-                    <button data-remove-from-group="${st.id}" title="إزالة من المجموعة">✕</button>
                   </span>`).join('') 
               : '<span style="color:#B7B2D6;font-size:11px;">لا توجد طالبات في هذه المجموعة بعد</span>'}
           </div>
